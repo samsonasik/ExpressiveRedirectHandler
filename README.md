@@ -1,7 +1,7 @@
 ExpressiveRedirectHandler
 =====================
 
-[![Latest Version](https://img.shields.io/github/release/samsonasik/ExpressiveRedirectHandler.svg?style=flat-square)](https://github.com/samsonasik/ExpressiveRedirectHandler/releases)
+[![PHP version](https://badge.fury.io/ph/samsonasik%2Fexpressive-redirect-handler.svg)](https://badge.fury.io/ph/samsonasik%2Fexpressive-redirect-handler)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Build Status](https://travis-ci.org/samsonasik/ExpressiveRedirectHandler.svg?branch=master)](https://travis-ci.org/samsonasik/ExpressiveRedirectHandler)
 [![Coverage Status](https://coveralls.io/repos/samsonasik/ExpressiveRedirectHandler/badge.svg?branch=master)](https://coveralls.io/r/samsonasik/ExpressiveRedirectHandler)
