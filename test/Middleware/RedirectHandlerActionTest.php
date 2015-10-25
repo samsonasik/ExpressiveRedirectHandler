@@ -47,7 +47,18 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testInvokeWithHtmlResponse()
+    public function provideNextForInvokeWithResponse()
+    {
+        return [
+            [null],
+            [function ($req, $res, $err = null) { return new Response(); }]
+        ];
+    }
+
+    /**
+     * @dataProvider provideNextForInvokeWithResponse
+     */
+    public function testInvokeWithResponse($next)
     {
         $request  = new ServerRequest(['/']);
         $response = new Response();
@@ -55,7 +66,7 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
         $response = $this->middleware->__invoke(
             $request,
             $response,
-            null
+            $next
         );
 
         $this->assertInstanceOf(Response::class, $response);
@@ -110,5 +121,7 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
             $response,
             $next
         );
+
+        $this->assertNull($response);
     }
 }
