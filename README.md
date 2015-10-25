@@ -7,7 +7,7 @@ ExpressiveRedirectHandler
 [![Coverage Status](https://coveralls.io/repos/samsonasik/ExpressiveRedirectHandler/badge.svg?branch=master)](https://coveralls.io/r/samsonasik/ExpressiveRedirectHandler)
 [![Downloads](https://img.shields.io/packagist/dt/samsonasik/expressive-redirect-handler.svg?style=flat-square)](https://packagist.org/packages/samsonasik/expressive-redirect-handler)
 
-*ExpressiveRedirectHandler* is a package that contains [zend-expressive](https://github.com/zendframework/zend-expressive) middleware for handling redirect when the given url to `RedirectResponse` is not registered in your zf2 application, that fit with [zend-expressive-skeleton](https://github.com/zendframework/zend-expressive-skeleton).  
+*ExpressiveRedirectHandler* is a package that contains [zend-expressive](https://github.com/zendframework/zend-expressive) middleware for handling redirect when the given url to `RedirectResponse` is not registered in your expressive application, that fit with [zend-expressive-skeleton](https://github.com/zendframework/zend-expressive-skeleton).  
 
 For example, we use `RedirectResponse` instance in our Middleware:
 

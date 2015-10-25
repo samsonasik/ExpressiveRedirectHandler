@@ -4,7 +4,7 @@
     colors="true"
     bootstrap="vendor/autoload.php">
     <testsuites>
-        <testsuite name="RedirectHandlerModule Test">
+        <testsuite name="ExpressiveRedirectHandler Test">
             <directory suffix=".php">./test</directory>
         </testsuite>
     </testsuites>
@@ -15,7 +15,7 @@
         </whitelist>
     </filter>
     <logging>
-        <log type="coverage-php" target="./build/coverage/coverage-redirect-handler-module.cov"/>
+        <log type="coverage-php" target="./build/coverage/coverage-expressive-redirect-handler.cov"/>
         <log type="coverage-html" target="./test/html-report/" charset="UTF-8" yui="true" />
     </logging>
 </phpunit>
