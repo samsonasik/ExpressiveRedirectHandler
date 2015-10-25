@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit
+    colors="true"
+    bootstrap="vendor/autoload.php">
+    <testsuites>
+        <testsuite name="RedirectHandlerModule Test">
+            <directory suffix=".php">./test</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./config</directory>
+            <directory suffix=".php">./src</directory>
+        </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-php" target="./build/coverage/coverage-redirect-handler-module.cov"/>
+        <log type="coverage-html" target="./test/html-report/" charset="UTF-8" yui="true" />
+    </logging>
+</phpunit>
