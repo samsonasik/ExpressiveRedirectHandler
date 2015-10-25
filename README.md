@@ -18,7 +18,7 @@ $redirect = '/foo'; // may be a variable from GET
 return new RedirectResponse($redirect);
 ```
 
-if the passed `$redirect` as url is a valid and registered in the routes, it uses default `redirect()` implementation, otherwise, it will redirect to default `default_url` registered in `config/autoload/expressive-redirect-handler.local.php`:
+if the passed `$redirect` as url is a valid and registered in the routes, it uses default `RedirectResponse` implementation, otherwise, it will redirect to default `default_url` registered in `config/autoload/expressive-redirect-handler.local.php`:
 
 For example, we define:
 
