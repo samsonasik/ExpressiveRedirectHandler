@@ -2,8 +2,6 @@
 
 namespace ExpressiveRedirectHandler\Middleware;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Diactoros\Uri;
@@ -20,8 +18,12 @@ class RedirectHandlerAction
         $this->router = $router;
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
+    public function __invoke($request, $response, callable $next = null)
     {
+        if (null === $next) {
+            return $response;
+        }
+        
         $response = $next($request, $response);
 
         if ($response instanceof RedirectResponse) {
