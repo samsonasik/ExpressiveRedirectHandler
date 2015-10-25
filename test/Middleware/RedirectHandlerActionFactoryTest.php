@@ -15,7 +15,6 @@ class RedirectHandlerActionFactoryTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->container = $this->prophesize(ContainerInterface::class);
-        $router = $this->prophesize(RouterInterface::class);
     }
 
     public function testFactory()
@@ -27,6 +26,7 @@ class RedirectHandlerActionFactoryTest extends \PHPUnit_Framework_TestCase
                 'default_url' => '/',
             ],
         ]);
+        $router = $this->prophesize(RouterInterface::class);
         $this->container->get(RouterInterface::class)
                         ->willReturn($router);
 
