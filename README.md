@@ -46,7 +46,7 @@ Installation
 $ composer require samsonasik/expressive-redirect-handler:0.*
 ```
 
- - Copy `vendor/samsonasik/samsonasik/expressive-redirect-handler/config/expressive-redirect-handler.local.php.dist` to `config/autoload/expressive-redirect-handler.local.php` and modify on your needs.
+ - Copy `vendor/samsonasik/samsonasik/expressive-redirect-handler/config/expressive-redirect-handler.local.php.dist` to `config/autoload/expressive-redirect-handler.local.php` and modify on our needs.
 
 
 Contributing
