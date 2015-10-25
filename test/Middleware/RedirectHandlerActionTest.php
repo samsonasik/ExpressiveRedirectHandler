@@ -23,7 +23,10 @@ use ExpressiveRedirectHandler\Middleware\RedirectHandlerAction;
 use Interop\Container\ContainerInterface;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Diactoros\Response;
+use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\ServerRequest;
+use Zend\Diactoros\Uri;
+use Zend\Expressive\Router\RouteResult;
 
 class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
 {
@@ -33,10 +36,8 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $config = [
-            'expressive-redirect-handler' => [
-                'allow_not_routed_url' => false,
-                'default_url' => '/',
-            ],
+            'allow_not_routed_url' => false,
+            'default_url' => '/',
         ];
         $this->router = $this->prophesize(RouterInterface::class);
 
@@ -58,5 +59,56 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertInstanceOf(Response::class, $response);
+    }
+
+    public function testInvokeRedirectResponseAllowNotRoutedUrl()
+    {
+        $config = [
+            'allow_not_routed_url' => true,
+            'default_url' => '/',
+        ];
+        $router = $this->prophesize(RouterInterface::class);
+
+        $middleware = new RedirectHandlerAction(
+            $config,
+            $router->reveal()
+        );
+
+        $request  = $this->prophesize(ServerRequest::class);
+        $response = new RedirectResponse('/foo');
+        $next = function ($req, $res, $err = null) use ($response) {
+            return $response;
+        };
+
+        $response = $middleware->__invoke(
+            $request->reveal(),
+            $response,
+            $next
+        );
+    }
+
+    public function testInvokeRedirectResponseToSameUri()
+    {
+        $request  = $this->prophesize(ServerRequest::class);
+        $response = new RedirectResponse('/');
+        $next = function ($req, $res, $err = null) use ($response) {
+            return $response;
+        };
+
+        $routeResult = RouteResult::fromRouteMatch('home', function() {}, []);
+        $uri = $this->prophesize(Uri::class);
+        $uri->getPath()->willReturn('/')->shouldBeCalled();
+        $request->getUri()->willReturn($uri)->shouldBeCalled();
+        $request->withUri(new Uri('/'))
+                ->willReturn($request)
+                ->shouldBeCalled();
+        $this->router->match($request)
+                     ->willReturn($routeResult)->shouldBeCalled();
+
+        $response = $this->middleware->__invoke(
+            $request->reveal(),
+            $response,
+            $next
+        );
     }
 }
