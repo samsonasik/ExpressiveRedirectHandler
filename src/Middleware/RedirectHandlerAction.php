@@ -61,9 +61,13 @@ class RedirectHandlerAction
                 && $currentPath !== $default_url
             ) {
                 return $response->withHeader('location', $default_url);
+            } else {
+                if ($uri !== $currentPath) {
+                    return $response;
+                }
             }
+        } else {
+            return $response;
         }
-
-        return $response;
     }
 }
