@@ -49,7 +49,7 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
             $config,
             $this->router->reveal()
         );
-    } 
+    }
 
     public function provideNextForInvokeWithResponse()
     {
@@ -104,8 +104,6 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
 
     public function testInvokeRedirectResponseToSameUri()
     {
-        $this->setExpectedException('RuntimeException');
-
         $request  = $this->prophesize(ServerRequest::class);
         $response = new RedirectResponse('/');
         $next = function ($req, $res, $err = null) use ($response) {
