@@ -40,12 +40,16 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
             'default_url' => '/',
         ];
         $this->router = $this->prophesize(RouterInterface::class);
+        $request      = new ServerRequest(['/']);
+        $request      = $request->withUri(new Uri($config['default_url']));
+        $this->router->match($request)
+                     ->willReturn(RouteResult::fromRouteMatch('home', function() {}, []));
 
         $this->middleware = new RedirectHandlerAction(
             $config,
             $this->router->reveal()
         );
-    }
+    } 
 
     public function provideNextForInvokeWithResponse()
     {
@@ -100,6 +104,8 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
 
     public function testInvokeRedirectResponseToSameUri()
     {
+        $this->setExpectedException('RuntimeException');
+
         $request  = $this->prophesize(ServerRequest::class);
         $response = new RedirectResponse('/');
         $next = function ($req, $res, $err = null) use ($response) {
@@ -121,63 +127,5 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
             $response,
             $next
         );
-
-        $this->assertNull($response);
-    }
-
-    public function testInvokeRedirectResponseMatchIsFailureCurrentPathIsNotEqualsWithDefaultUrl()
-    {
-        $request  = $this->prophesize(ServerRequest::class);
-        $response = new RedirectResponse('/bar');
-        $next = function ($req, $res, $err = null) use ($response) {
-            return $response;
-        };
-
-        $routeResult = RouteResult::fromRouteMatch('bar', function() {}, []);
-        $uri = $this->prophesize(Uri::class);
-        $uri->getPath()->willReturn('/foo')->shouldBeCalled();
-        $request->getUri()->willReturn($uri)->shouldBeCalled();
-        $request->withUri(new Uri('/bar'))
-                ->willReturn($request)
-                ->shouldBeCalled();
-        $this->router->match($request)
-                     ->willReturn($routeResult)->shouldBeCalled();
-
-        $response = $this->middleware->__invoke(
-            $request->reveal(),
-            $response,
-            $next
-        );
-
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertEquals('/bar', $response->getHeader('location')[0]);
-    }
-
-    public function testInvokeRedirectResponseMatchSucceedAndUriIsDifferentWithCurrentPath()
-    {
-        $request  = $this->prophesize(ServerRequest::class);
-        $response = new RedirectResponse('/bar');
-        $next = function ($req, $res, $err = null) use ($response) {
-            return $response;
-        };
-
-        $routeResult = RouteResult::fromRouteFailure();
-        $uri = $this->prophesize(Uri::class);
-        $uri->getPath()->willReturn('/foo')->shouldBeCalled();
-        $request->getUri()->willReturn($uri)->shouldBeCalled();
-        $request->withUri(new Uri('/bar'))
-                ->willReturn($request)
-                ->shouldBeCalled();
-        $this->router->match($request)
-                     ->willReturn($routeResult)->shouldBeCalled();
-
-        $response = $this->middleware->__invoke(
-            $request->reveal(),
-            $response,
-            $next
-        );
-
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertEquals('/', $response->getHeader('location')[0]);
     }
 }

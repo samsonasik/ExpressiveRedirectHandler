@@ -19,6 +19,8 @@
 
 namespace ExpressiveRedirectHandler\Middleware;
 
+use InvalidArgumentException;
+use RuntimeException;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Diactoros\Uri;
@@ -54,6 +56,16 @@ class RedirectHandlerAction
             $currentPath = $request->getUri()->getPath();
             $uriTarget   = $response->getHeader('location')[0];
 
+            $request       = $request->withUri(new Uri($default_url));
+            $match         = $this->router->match($request);
+
+            if ($match->isFailure()) {
+                throw new InvalidArgumentException(sprintf(
+                        'default_url "%s" is not match with any registered routes',
+                        $default_url
+                ));
+            }
+
             $request       = $request->withUri(new Uri($uriTarget));
             $uriTargetPath = $request->getUri()->getPath();
             $match         = $this->router->match($request);
@@ -61,13 +73,13 @@ class RedirectHandlerAction
             if ($match->isFailure()
                 && $uriTarget !==  $default_url
                 && $uriTargetPath !== $default_url
-                && $currentPath !== $default_url
             ) {
                 return $response->withHeader('location', $default_url);
             } else {
-                if ($uriTargetPath !== $currentPath
-                    || $uriTarget !== $currentPath
-                ) {
+                if ($currentPath === $uriTargetPath) {
+                    throw new RuntimeException('Current path with target uri should not be same');
+                }
+                if ($currentPath !== $uriTargetPath) {
                     return $response;
                 }
             }
