@@ -21,6 +21,7 @@ namespace ExpressiveRedirectHandlerTest\Middleware;
 
 use ExpressiveRedirectHandler\Middleware\RedirectHandlerAction;
 use Interop\Container\ContainerInterface;
+use Prophecy\Argument;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\RedirectResponse;
@@ -95,6 +96,87 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
             return $response;
         };
 
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+
+        $response = $middleware->__invoke(
+            $request->reveal(),
+            $response,
+            $next
+        );
+
+        $this->assertInstanceOf(Response::class, $response);
+    }
+
+    public function testInvokeRedirectResponseDisallowNotRoutedUrlAndRouteMatchIsFailure()
+    {
+        $config = [
+            'allow_not_routed_url' => false,
+            'default_url' => '/',
+        ];
+        $router = $this->prophesize(RouterInterface::class);
+
+        $middleware = new RedirectHandlerAction(
+            $config,
+            $router->reveal()
+        );
+
+        $request  = $this->prophesize(ServerRequest::class);
+        $uri = $this->prophesize(Uri::class);
+        $uri->getPath()->willReturn('/')->shouldBeCalled();
+        $request->getUri()->willReturn($uri)->shouldBeCalled();
+
+        $uri->getPath()->willReturn('/foo')->shouldBeCalled();
+        $request->withUri(Argument::any())->willReturn($request)->shouldBeCalled();
+        $request->getUri()->willReturn($uri)->shouldBeCalled();
+
+        $routeResult = RouteResult::fromRouteFailure();
+        $router->match($request)->willReturn($routeResult);
+
+        $response = new RedirectResponse('/foo?query');
+        $next = function ($req, $res, $err = null) use ($response) {
+            return $response;
+        };
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+
+        $response = $middleware->__invoke(
+            $request->reveal(),
+            $response,
+            $next
+        );
+
+        $this->assertInstanceOf(Response::class, $response);
+    }
+
+    public function testInvokeRedirectResponseDisallowNotRoutedUrlAndRouteMatchIsSuccessAndCurrentPathIsNotEqualsWithTargetPath()
+    {
+        $config = [
+            'allow_not_routed_url' => false,
+            'default_url' => '/',
+        ];
+        $router = $this->prophesize(RouterInterface::class);
+
+        $middleware = new RedirectHandlerAction(
+            $config,
+            $router->reveal()
+        );
+
+        $request  = $this->prophesize(ServerRequest::class);
+        $uri = $this->prophesize(Uri::class);
+        $uri->getPath()->willReturn('/')->shouldBeCalled();
+        $request->getUri()->willReturn($uri)->shouldBeCalled();
+
+        $request->withUri(Argument::any())->willReturn($request);
+        $request->getUri()->willReturn($uri);
+
+        $routeResult = RouteResult::fromRouteMatch('foo', 'foo', []);
+        $router->match($request)->willReturn($routeResult);
+
+        $response = new RedirectResponse('/foo');
+        $next = function ($req, $res, $err = null) use ($response) {
+            return $response;
+        };
+
         $response = $middleware->__invoke(
             $request->reveal(),
             $response,
@@ -114,9 +196,11 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
         $uri = $this->prophesize(Uri::class);
         $uri->getPath()->willReturn('/')->shouldBeCalled();
         $request->getUri()->willReturn($uri)->shouldBeCalled();
-        $request->withUri(new Uri('/'))
-                ->willReturn($request)
-                ->shouldBeCalled();
+
+        $uri->getPath()->willReturn('/')->shouldBeCalled();
+        $request->withUri(Argument::any())->willReturn($request)->shouldBeCalled();
+        $request->getUri()->willReturn($uri)->shouldBeCalled();
+
         $this->router->match($request)
                      ->willReturn($routeResult)->shouldBeCalled();
 

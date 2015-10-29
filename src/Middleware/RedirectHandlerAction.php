@@ -55,18 +55,9 @@ class RedirectHandlerAction
             $currentPath = $request->getUri()->getPath();
             $uriTarget   = $response->getHeader('location')[0];
 
-            $request       = $request->withUri(new Uri($default_url));
-            $match         = $this->router->match($request);
-
-            if ($match->isFailure()) {
-                throw new InvalidArgumentException(sprintf(
-                    'default_url "%s" is not match with any registered routes',
-                    $default_url
-                ));
-            }
-
+            $newUri        = new Uri($uriTarget);
             $request       = $request->withUri(new Uri($uriTarget));
-            $uriTargetPath = $request->getUri()->getPath();
+            $uriTargetPath = $newUri->getPath();
             $match         = $this->router->match($request);
 
             if ($match->isFailure()
