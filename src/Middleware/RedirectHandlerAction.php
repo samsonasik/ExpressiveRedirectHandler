@@ -19,6 +19,7 @@
 
 namespace ExpressiveRedirectHandler\Middleware;
 
+use InvalidArgumentException;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Diactoros\Uri;
@@ -45,24 +46,27 @@ class RedirectHandlerAction
 
         if ($response instanceof RedirectResponse) {
             $allow_not_routed_url = (isset($this->config['allow_not_routed_url'])) ? $this->config['allow_not_routed_url'] : false;
-            $default_url = (isset($this->config['default_url'])) ? $this->config['default_url'] : '/';
+            $default_url          = (isset($this->config['default_url'])) ? $this->config['default_url'] : '/';
 
             if (true === $allow_not_routed_url) {
                 return $response;
             }
 
             $currentPath = $request->getUri()->getPath();
-            $uri     = $response->getHeader('location')[0];
-            $request = $request->withUri(new Uri($uri));
-            $match   = $this->router->match($request);
+            $uriTarget   = $response->getHeader('location')[0];
+
+            $newUri        = new Uri($uriTarget);
+            $request       = $request->withUri(new Uri($uriTarget));
+            $uriTargetPath = $newUri->getPath();
+            $match         = $this->router->match($request);
 
             if ($match->isFailure()
-                &&  $uri !==  $default_url
-                && $currentPath !== $default_url
+                && $uriTarget !==  $default_url
+                && $uriTargetPath !== $default_url
             ) {
                 return $response->withHeader('location', $default_url);
             } else {
-                if ($uri !== $currentPath) {
+                if ($currentPath !== $uriTargetPath) {
                     return $response;
                 }
             }
