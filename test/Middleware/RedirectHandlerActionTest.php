@@ -20,7 +20,6 @@
 namespace ExpressiveRedirectHandlerTest\Middleware;
 
 use ExpressiveRedirectHandler\Middleware\RedirectHandlerAction;
-use Interop\Container\ContainerInterface;
 use Prophecy\Argument;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Diactoros\Response;

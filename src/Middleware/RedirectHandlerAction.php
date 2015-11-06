@@ -19,7 +19,6 @@
 
 namespace ExpressiveRedirectHandler\Middleware;
 
-use InvalidArgumentException;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Diactoros\Uri;
