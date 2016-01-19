@@ -110,7 +110,7 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
     {
         $config = [
             'allow_not_routed_url' => false,
-            'default_url' => '/',
+            'default_url' => '/default',
         ];
         $router = $this->prophesize(RouterInterface::class);
 
@@ -124,9 +124,7 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
         $uri->getPath()->willReturn('/')->shouldBeCalled();
         $request->getUri()->willReturn($uri)->shouldBeCalled();
 
-        $uri->getPath()->willReturn('/foo')->shouldBeCalled();
-        $request->withUri(Argument::any())->willReturn($request)->shouldBeCalled();
-        $request->getUri()->willReturn($uri)->shouldBeCalled();
+        $request->withUri(Argument::any())->willReturn($request);
 
         $routeResult = RouteResult::fromRouteFailure();
         $router->match($request)->willReturn($routeResult);
@@ -147,7 +145,18 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(Response::class, $response);
     }
 
-    public function testInvokeRedirectResponseDisallowNotRoutedUrlAndRouteMatchIsSuccessAndCurrentPathIsNotEqualsWithTargetPath()
+    public function provideInvokeRedirectResponseDisallowNotRoutedUrlAndRouteMatchIsSuccess()
+    {
+        return [
+            ['/', true],
+            ['/foo', false],
+        ];
+    }
+
+    /**
+     * @dataProvider provideInvokeRedirectResponseDisallowNotRoutedUrlAndRouteMatchIsSuccess
+     */
+    public function testInvokeRedirectResponseDisallowNotRoutedUrlAndRouteMatchIsSuccess($path, $isNull)
     {
         $config = [
             'allow_not_routed_url' => false,
@@ -162,7 +171,7 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
 
         $request  = $this->prophesize(ServerRequest::class);
         $uri = $this->prophesize(Uri::class);
-        $uri->getPath()->willReturn('/')->shouldBeCalled();
+        $uri->getPath()->willReturn($path)->shouldBeCalled();
         $request->getUri()->willReturn($uri)->shouldBeCalled();
 
         $request->withUri(Argument::any())->willReturn($request);
@@ -181,6 +190,12 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
             $response,
             $next
         );
+
+        if ($isNull) {
+            $this->assertNull($response);
+        } else {
+            $this->assertInstanceOf(RedirectResponse::class, $response);
+        }
     }
 
     public function testInvokeRedirectResponseToSameUri()

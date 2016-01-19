@@ -14,10 +14,11 @@ return [
     ],
 
     'middleware_pipeline' => [
-        'pre_routing' => [
-            [
-                'middleware' => ExpressiveRedirectHandler\Middleware\RedirectHandlerAction::class
-            ]
+        'always' => [
+            'middleware' => [
+                ExpressiveRedirectHandler\Middleware\RedirectHandlerAction::class
+            ],
+            'priority' => PHP_INT_MAX,
         ],
     ],
 

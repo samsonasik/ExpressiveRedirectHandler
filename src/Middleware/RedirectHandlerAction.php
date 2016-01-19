@@ -59,18 +59,24 @@ class RedirectHandlerAction
             $uriTargetPath = $newUri->getPath();
             $match         = $this->router->match($request);
 
+            if ($currentPath === $default_url
+                || $uriTarget === $default_url
+                || $uriTargetPath === $default_url
+            ) {
+                return;
+            }
+
             if ($match->isFailure()
-                && $uriTarget !==  $default_url
-                && $uriTargetPath !== $default_url
+                || ($match->isSuccess()
+                    && $uriTargetPath === $currentPath
+                    && $uriTarget !== $default_url
+                    && $uriTargetPath !== $default_url
+                )
             ) {
                 return $response->withHeader('location', $default_url);
-            } else {
-                if ($currentPath !== $uriTargetPath) {
-                    return $response;
-                }
             }
-        } else {
-            return $response;
         }
+
+        return $response;
     }
 }
