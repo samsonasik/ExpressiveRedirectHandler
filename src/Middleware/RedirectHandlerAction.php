@@ -45,12 +45,12 @@ class RedirectHandlerAction
 
         if ($response instanceof RedirectResponse) {
             $allow_not_routed_url = (isset($this->config['allow_not_routed_url'])) ? $this->config['allow_not_routed_url'] : false;
-            $default_url          = (isset($this->config['default_url'])) ? $this->config['default_url'] : '/';
-
+            
             if (true === $allow_not_routed_url) {
                 return $response;
             }
 
+            $default_url = (isset($this->config['default_url'])) ? $this->config['default_url'] : '/';
             $currentPath = $request->getUri()->getPath();
             $uriTarget   = $response->getHeader('location')[0];
 
