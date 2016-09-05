@@ -7,7 +7,9 @@ ExpressiveRedirectHandler
 [![Coverage Status](https://coveralls.io/repos/samsonasik/ExpressiveRedirectHandler/badge.svg?branch=master)](https://coveralls.io/r/samsonasik/ExpressiveRedirectHandler)
 [![Downloads](https://img.shields.io/packagist/dt/samsonasik/expressive-redirect-handler.svg?style=flat-square)](https://packagist.org/packages/samsonasik/expressive-redirect-handler)
 
-*ExpressiveRedirectHandler* is a package that contains [zend-expressive](https://github.com/zendframework/zend-expressive) middleware for handling redirect when the given url to `RedirectResponse` is not registered in your expressive application, that fit with [zend-expressive-skeleton](https://github.com/zendframework/zend-expressive-skeleton).  
+*ExpressiveRedirectHandler* is a package that contains [zend-expressive](https://github.com/zendframework/zend-expressive) middleware for handling redirect for following conditions:
+
+- When the given url to `RedirectResponse` is not registered in your expressive application, that fit with [zend-expressive-skeleton](https://github.com/zendframework/zend-expressive-skeleton).  
 
 For example, we use `RedirectResponse` instance in our Middleware:
 
@@ -37,6 +39,27 @@ return [
 ```
 
 It means, we can't allow to make redirect to outside registered routes, whenever found un-registered url in routes, then we will be redirected to default_url. Also, it disable to self, so you can't redirect to self.
+
+- When you want to redirect to specific url based on header status code, by activate the `header_handler` config and specify the url you want.
+
+```php
+<?php 
+return [
+
+    'expressive-redirect-handler' => [
+        'allow_not_routed_url' => false,
+        'default_url' => '/',
+        'header_handler' => [
+            'enable' => true, // enable it!
+            'headers' => [
+                401 => '/login',
+                503 => '/maintenance',
+            ],
+        ],
+    ],
+    // ...
+];
+```
 
 Installation
 ------------

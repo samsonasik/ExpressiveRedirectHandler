@@ -75,6 +75,77 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(Response::class, $response);
     }
+    
+    /**
+     * @dataProvider provideNextForInvokeWithResponse
+     */
+    public function testInvokeWithResponseWithDisabledHeaderHandler($next)
+    {
+        $request  = new ServerRequest(['/']);
+        $response = new Response();
+        
+        $config = [
+            'allow_not_routed_url' => false,
+            'default_url' => '/',
+            'header_handler' => [
+                'enable' => false,
+                'headers' => [
+                    401 => '/login',
+                    503 => '/maintenance',
+                ],
+            ],
+        ];
+        
+        $this->middleware = new RedirectHandlerAction(
+            $config,
+            $this->router->reveal()
+        );
+
+        $response = $this->middleware->__invoke(
+            $request,
+            $response,
+            $next
+        );
+
+        $this->assertInstanceOf(Response::class, $response);
+    }
+        
+    public function testInvokeWithResponseWithEnabledHeaderHandler()
+    {
+        $request  = new ServerRequest(['/']);
+        $response = new Response();
+        
+        $config = [
+            'allow_not_routed_url' => false,
+            'default_url' => '/',
+            'header_handler' => [
+                'enable' => true,
+                'headers' => [
+                    401 => '/login',
+                    503 => '/maintenance',
+                ],
+            ],
+        ];
+        
+        $this->middleware = new RedirectHandlerAction(
+            $config,
+            $this->router->reveal()
+        );
+
+        $response = $this->middleware->__invoke(
+            $request,
+            $response,
+            function ($req, $res, $err = null) {
+                $response  = new Response();
+                $response = $response->withStatus(401);
+                
+                return $response;
+             }
+        );
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertEquals('/login', $response->getHeaders()['location'][0]);
+    }
 
     public function testInvokeRedirectResponseAllowNotRoutedUrl()
     {

@@ -5,6 +5,13 @@ return [
     'expressive-redirect-handler' => [
         'allow_not_routed_url' => false,
         'default_url' => '/',
+        'header_handler' => [
+            'enable' => false,
+            'headers' => [
+                401 => '/login',
+                503 => '/maintenance',
+            ],
+        ],
     ],
 
     'dependencies' => [
