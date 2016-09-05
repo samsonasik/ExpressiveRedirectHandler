@@ -109,12 +109,9 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(Response::class, $response);
     }
-        
+    
     public function testInvokeWithResponseWithEnabledHeaderHandler()
     {
-        $request  = new ServerRequest(['/']);
-        $response = new Response();
-        
         $config = [
             'allow_not_routed_url' => false,
             'default_url' => '/',
@@ -126,21 +123,34 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
         ];
-        
-        $this->middleware = new RedirectHandlerAction(
+        $router = $this->prophesize(RouterInterface::class);
+
+        $middleware = new RedirectHandlerAction(
             $config,
-            $this->router->reveal()
+            $router->reveal()
         );
 
-        $response = $this->middleware->__invoke(
-            $request,
+        $request  = $this->prophesize(ServerRequest::class);
+        $uri = $this->prophesize(Uri::class);
+        $uri->getPath()->willReturn('/foo')->shouldBeCalled();
+        $request->getUri()->willReturn($uri)->shouldBeCalled();
+
+        $request->withUri(Argument::any())->willReturn($request);
+        $request->getUri()->willReturn($uri);
+
+        $routeResult = RouteResult::fromRouteMatch('foo', 'foo', []);
+        $router->match($request)->willReturn($routeResult);
+
+        $response = new Response();
+        $response = $response->withStatus(401);
+        $next = function ($req, $res, $err = null) use ($response) {
+            return $response;
+        };
+
+        $response = $middleware->__invoke(
+            $request->reveal(),
             $response,
-            function ($req, $res, $err = null) {
-                $response  = new Response();
-                $response = $response->withStatus(401);
-                
-                return $response;
-             }
+            $next
         );
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
