@@ -49,6 +49,7 @@ class RedirectHandlerAction
                 foreach ($this->config['header_handler']['headers'] as $code => $redirect) {
                     if ($code === $statusCode) {
                         $response = new RedirectResponse($redirect);
+                        break;
                     }
                 }
             }
