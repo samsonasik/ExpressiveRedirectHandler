@@ -135,7 +135,7 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
         $uri->getPath()->willReturn('/foo')->shouldBeCalled();
         $request->getUri()->willReturn($uri)->shouldBeCalled();
 
-        $request->withUri(Argument::any())->willReturn($request);
+        $request->withUri(Argument::type(Uri::class))->willReturn($request);
         $request->getUri()->willReturn($uri);
 
         $routeResult = RouteResult::fromRouteMatch('foo', 'foo', []);
@@ -205,7 +205,7 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
         $uri->getPath()->willReturn('/')->shouldBeCalled();
         $request->getUri()->willReturn($uri)->shouldBeCalled();
 
-        $request->withUri(Argument::any())->willReturn($request);
+        $request->withUri(Argument::type(Uri::class))->willReturn($request);
 
         $routeResult = RouteResult::fromRouteFailure();
         $router->match($request)->willReturn($routeResult);
@@ -255,7 +255,7 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
         $uri->getPath()->willReturn($path)->shouldBeCalled();
         $request->getUri()->willReturn($uri)->shouldBeCalled();
 
-        $request->withUri(Argument::any())->willReturn($request);
+        $request->withUri(Argument::type(Uri::class))->willReturn($request);
         $request->getUri()->willReturn($uri);
 
         $routeResult = RouteResult::fromRouteMatch('foo', 'foo', []);
@@ -293,7 +293,7 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
         $request->getUri()->willReturn($uri)->shouldBeCalled();
 
         $uri->getPath()->willReturn('/')->shouldBeCalled();
-        $request->withUri(Argument::any())->willReturn($request)->shouldBeCalled();
+        $request->withUri(Argument::type(Uri::class))->willReturn($request)->shouldBeCalled();
         $request->getUri()->willReturn($uri)->shouldBeCalled();
 
         $this->router->match($request)

@@ -67,7 +67,7 @@ class RedirectHandlerAction
             $uriTarget   = $response->getHeader('location')[0];
 
             $newUri        = new Uri($uriTarget);
-            $request       = $request->withUri(new Uri($uriTarget));
+            $request       = $request->withUri($newUri);
             $uriTargetPath = $newUri->getPath();
             $match         = $this->router->match($request);
 
