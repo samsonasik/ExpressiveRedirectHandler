@@ -75,6 +75,87 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(Response::class, $response);
     }
+    
+    /**
+     * @dataProvider provideNextForInvokeWithResponse
+     */
+    public function testInvokeWithResponseWithDisabledHeaderHandler($next)
+    {
+        $request  = new ServerRequest(['/']);
+        $response = new Response();
+        
+        $config = [
+            'allow_not_routed_url' => false,
+            'default_url' => '/',
+            'header_handler' => [
+                'enable' => false,
+                'headers' => [
+                    401 => '/login',
+                    503 => '/maintenance',
+                ],
+            ],
+        ];
+        
+        $this->middleware = new RedirectHandlerAction(
+            $config,
+            $this->router->reveal()
+        );
+
+        $response = $this->middleware->__invoke(
+            $request,
+            $response,
+            $next
+        );
+
+        $this->assertInstanceOf(Response::class, $response);
+    }
+    
+    public function testInvokeWithResponseWithEnabledHeaderHandler()
+    {
+        $config = [
+            'allow_not_routed_url' => false,
+            'default_url' => '/',
+            'header_handler' => [
+                'enable' => true,
+                'headers' => [
+                    401 => '/login',
+                    503 => '/maintenance',
+                ],
+            ],
+        ];
+        $router = $this->prophesize(RouterInterface::class);
+
+        $middleware = new RedirectHandlerAction(
+            $config,
+            $router->reveal()
+        );
+
+        $request  = $this->prophesize(ServerRequest::class);
+        $uri = $this->prophesize(Uri::class);
+        $uri->getPath()->willReturn('/foo')->shouldBeCalled();
+        $request->getUri()->willReturn($uri)->shouldBeCalled();
+
+        $request->withUri(Argument::type(Uri::class))->willReturn($request);
+        $request->getUri()->willReturn($uri);
+
+        $routeResult = RouteResult::fromRouteMatch('foo', 'foo', []);
+        $router->match($request)->willReturn($routeResult);
+
+        $response = new Response();
+        $response = $response->withStatus(401);
+        $next = function ($req, $res, $err = null) use ($response) {
+            return $response;
+        };
+
+        $response = $middleware->__invoke(
+            $request->reveal(),
+            $response,
+            $next
+        );
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertEquals('/login', $response->getHeaders()['location'][0]);
+    }
 
     public function testInvokeRedirectResponseAllowNotRoutedUrl()
     {
@@ -124,7 +205,7 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
         $uri->getPath()->willReturn('/')->shouldBeCalled();
         $request->getUri()->willReturn($uri)->shouldBeCalled();
 
-        $request->withUri(Argument::any())->willReturn($request);
+        $request->withUri(Argument::type(Uri::class))->willReturn($request);
 
         $routeResult = RouteResult::fromRouteFailure();
         $router->match($request)->willReturn($routeResult);
@@ -174,7 +255,7 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
         $uri->getPath()->willReturn($path)->shouldBeCalled();
         $request->getUri()->willReturn($uri)->shouldBeCalled();
 
-        $request->withUri(Argument::any())->willReturn($request);
+        $request->withUri(Argument::type(Uri::class))->willReturn($request);
         $request->getUri()->willReturn($uri);
 
         $routeResult = RouteResult::fromRouteMatch('foo', 'foo', []);
@@ -212,7 +293,7 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
         $request->getUri()->willReturn($uri)->shouldBeCalled();
 
         $uri->getPath()->willReturn('/')->shouldBeCalled();
-        $request->withUri(Argument::any())->willReturn($request)->shouldBeCalled();
+        $request->withUri(Argument::type(Uri::class))->willReturn($request)->shouldBeCalled();
         $request->getUri()->willReturn($uri)->shouldBeCalled();
 
         $this->router->match($request)

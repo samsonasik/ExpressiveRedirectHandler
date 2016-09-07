@@ -42,6 +42,18 @@ class RedirectHandlerAction
         }
 
         $response = $next($request, $response);
+        
+        if (! empty($this->config['header_handler']['enable']) && ! $response instanceof RedirectResponse) {
+            if (! empty($this->config['header_handler']['headers'])) {
+                $statusCode = $response->getStatusCode();
+                foreach ($this->config['header_handler']['headers'] as $code => $redirect) {
+                    if ($code === $statusCode) {
+                        $response = new RedirectResponse($redirect);
+                        break;
+                    }
+                }
+            }
+        }
 
         if ($response instanceof RedirectResponse) {
             $allow_not_routed_url = (isset($this->config['allow_not_routed_url'])) ? $this->config['allow_not_routed_url'] : false;
@@ -55,7 +67,7 @@ class RedirectHandlerAction
             $uriTarget   = $response->getHeader('location')[0];
 
             $newUri        = new Uri($uriTarget);
-            $request       = $request->withUri(new Uri($uriTarget));
+            $request       = $request->withUri($newUri);
             $uriTargetPath = $newUri->getPath();
             $match         = $this->router->match($request);
 
