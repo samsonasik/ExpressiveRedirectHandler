@@ -7,9 +7,10 @@ ExpressiveRedirectHandler
 [![Coverage Status](https://coveralls.io/repos/samsonasik/ExpressiveRedirectHandler/badge.svg?branch=master)](https://coveralls.io/r/samsonasik/ExpressiveRedirectHandler)
 [![Downloads](https://img.shields.io/packagist/dt/samsonasik/expressive-redirect-handler.svg?style=flat-square)](https://packagist.org/packages/samsonasik/expressive-redirect-handler)
 
-*ExpressiveRedirectHandler* is a package that contains [zend-expressive](https://github.com/zendframework/zend-expressive) middleware for handling redirect for following conditions:
+*ExpressiveRedirectHandler* is a package that contains [zend-expressive](https://github.com/zendframework/zend-expressive) middleware for handling redirect that fit with [zend-expressive-skeleton](https://github.com/zendframework/zend-expressive-skeleton) for following conditions:
 
-- When the given url to `RedirectResponse` is not registered in your expressive application, that fit with [zend-expressive-skeleton](https://github.com/zendframework/zend-expressive-skeleton).  
+1. When the given url to `RedirectResponse` is not registered in routing config
+-------------------------------------------------------------------------------
 
 For example, we use `RedirectResponse` instance in our Middleware:
 
@@ -40,7 +41,8 @@ return [
 
 It means, we can't allow to make redirect to outside registered routes, whenever found un-registered url in routes, then we will be redirected to default_url. Also, it disable to self, so you can't redirect to self.
 
-- When you want to redirect to specific url based on header status code, by activate the `header_handler` config and specify the url you want.
+2. When you want to redirect to specific url based on header status code
+------------------------------------------------------------------------
 
 ```php
 <?php 
@@ -60,6 +62,9 @@ return [
     // ...
 ];
 ```
+
+Based on the configuration above, when header status code is 401 or 503, it will be redirected to its paired value.
+
 
 Installation
 ------------
