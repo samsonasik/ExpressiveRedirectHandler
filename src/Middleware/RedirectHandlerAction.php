@@ -43,7 +43,10 @@ class RedirectHandlerAction
 
         $response = $next($request, $response);
         
-        if (! empty($this->config['header_handler']['enable']) && ! $response instanceof RedirectResponse) {
+        if (isset($this->config['header_handler']['enable'])
+            && $this->config['header_handler']['enable'] === true
+            && ! $response instanceof RedirectResponse
+        ) {
             if (! empty($this->config['header_handler']['headers'])) {
                 $statusCode = $response->getStatusCode();
                 foreach ($this->config['header_handler']['headers'] as $code => $redirect) {
