@@ -19,7 +19,7 @@
     "require-dev": {
         "zendframework/zend-expressive": "^1.0",
         "phpunit/phpunit": "~4.0|~5.0",
-        "satooshi/php-coveralls": "dev-master",
+        "satooshi/php-coveralls": "^1.0",
         "phpunit/phpcov": "~2.0"
     },
     "autoload": {
