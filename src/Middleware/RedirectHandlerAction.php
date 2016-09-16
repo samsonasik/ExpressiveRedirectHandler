@@ -46,14 +46,13 @@ class RedirectHandlerAction
         if (isset($this->config['header_handler']['enable'])
             && $this->config['header_handler']['enable'] === true
             && ! $response instanceof RedirectResponse
+            && ! empty($this->config['header_handler']['headers'])
         ) {
-            if (! empty($this->config['header_handler']['headers'])) {
-                $statusCode = $response->getStatusCode();
-                foreach ($this->config['header_handler']['headers'] as $code => $redirect) {
-                    if ($code === $statusCode) {
-                        $response = new RedirectResponse($redirect);
-                        break;
-                    }
+            $statusCode = $response->getStatusCode();
+            foreach ($this->config['header_handler']['headers'] as $code => $redirect) {
+                if ($code === $statusCode) {
+                    $response = new RedirectResponse($redirect);
+                    break;
                 }
             }
         }
