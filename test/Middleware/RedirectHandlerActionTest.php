@@ -183,16 +183,6 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
         );
 
         $request  = $this->prophesize(ServerRequest::class);
-        $uri = $this->prophesize(Uri::class);
-        $uri->getPath()->willReturn('/foo')->shouldBeCalled();
-        $request->getUri()->willReturn($uri)->shouldBeCalled();
-
-        $request->withUri(Argument::type(Uri::class))->willReturn($request);
-        $request->getUri()->willReturn($uri);
-
-        $routeResult = RouteResult::fromRouteMatch('foo', 'foo', []);
-        $router->match($request)->willReturn($routeResult);
-
         $response = new Response();
         $response = $response->withStatus(401);
         $next = function ($req, $res, $err = null) use ($response) {
