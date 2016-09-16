@@ -157,6 +157,55 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('/login', $response->getHeaders()['location'][0]);
     }
 
+    /**
+     *  @expectedException \InvalidArgumentException
+     *  @expectedExceptionMessage redirect value for 503 must be a string
+     */
+    public function testInvokeWithResponseWithEnabledHeaderHandlerButRedirectIsNotString()
+    {
+        $config = [
+            'allow_not_routed_url' => false,
+            'default_url' => '/',
+            'header_handler' => [
+                'enable' => true,
+                'headers' => [
+                    402 => '/checkout',
+                    401 => '/login',
+                    503 => new \stdClass(),
+                ],
+            ],
+        ];
+        $router = $this->prophesize(RouterInterface::class);
+
+        $middleware = new RedirectHandlerAction(
+            $config,
+            $router->reveal()
+        );
+
+        $request  = $this->prophesize(ServerRequest::class);
+        $uri = $this->prophesize(Uri::class);
+        $uri->getPath()->willReturn('/foo')->shouldBeCalled();
+        $request->getUri()->willReturn($uri)->shouldBeCalled();
+
+        $request->withUri(Argument::type(Uri::class))->willReturn($request);
+        $request->getUri()->willReturn($uri);
+
+        $routeResult = RouteResult::fromRouteMatch('foo', 'foo', []);
+        $router->match($request)->willReturn($routeResult);
+
+        $response = new Response();
+        $response = $response->withStatus(401);
+        $next = function ($req, $res, $err = null) use ($response) {
+            return $response;
+        };
+
+        $response = $middleware->__invoke(
+            $request->reveal(),
+            $response,
+            $next
+        );
+    }
+
     public function testInvokeRedirectResponseAllowNotRoutedUrl()
     {
         $config = [

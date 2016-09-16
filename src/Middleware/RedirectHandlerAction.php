@@ -50,9 +50,14 @@ class RedirectHandlerAction
         ) {
             $statusCode = $response->getStatusCode();
             foreach ($this->config['header_handler']['headers'] as $code => $redirect) {
+                if (! is_string($redirect)) {
+                    throw new \InvalidArgumentException(sprintf(
+                        'redirect value for %s must be a string',
+                        $code
+                    ));
+                }
                 if ($code === $statusCode) {
                     $response = new RedirectResponse($redirect);
-                    break;
                 }
             }
         }
