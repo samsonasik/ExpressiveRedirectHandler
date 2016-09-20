@@ -12,6 +12,11 @@ return [
                 503 => '/maintenance',
             ],
         ],
+        'options' => [
+            'exclude_urls' => [
+                // 'https://www.github.com/samsonasik/ExpressiveRedirectHandler',
+            ], // to allow excluded urls to always be redirected
+        ],
     ],
 
     'dependencies' => [

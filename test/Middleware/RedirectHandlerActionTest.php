@@ -223,7 +223,42 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
             $next
         );
 
-        $this->assertInstanceOf(Response::class, $response);
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+    }
+    
+    public function testInvokeRedirectResponseWithExcludeOptions()
+    {
+        $config = [
+            'allow_not_routed_url' => false,
+            'default_url' => '/',
+            'options' => [
+                'exclude_urls' => [
+                    'https://www.github.com/samsonasik/ExpressiveRedirectHandler',
+                ],
+            ],
+        ];
+        $router = $this->prophesize(RouterInterface::class);
+
+        $middleware = new RedirectHandlerAction(
+            $config,
+            $router->reveal()
+        );
+
+        $request  = $this->prophesize(ServerRequest::class);
+        $response = new RedirectResponse('https://www.github.com/samsonasik/ExpressiveRedirectHandler');
+        $next = function ($req, $res, $err = null) use ($response) {
+            return $response;
+        };
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+
+        $response = $middleware->__invoke(
+            $request->reveal(),
+            $response,
+            $next
+        );
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
     }
 
     public function testInvokeRedirectResponseDisallowNotRoutedUrlAndRouteMatchIsFailure()

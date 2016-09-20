@@ -64,15 +64,16 @@ class RedirectHandlerAction
 
         if ($response instanceof RedirectResponse) {
             $allow_not_routed_url = (isset($this->config['allow_not_routed_url'])) ? $this->config['allow_not_routed_url'] : false;
-            
-            if (true === $allow_not_routed_url) {
+            $exclude_urls = (isset($this->config['options']['exclude_urls'])) ? $this->config['options']['exclude_urls'] : [];
+        
+            $uriTarget   = $response->getHeader('location')[0];
+            if (true === $allow_not_routed_url || in_array($uriTarget, $exclude_urls)) {
                 return $response;
             }
 
             $default_url = (isset($this->config['default_url'])) ? $this->config['default_url'] : '/';
             $currentPath = $request->getUri()->getPath();
-            $uriTarget   = $response->getHeader('location')[0];
-
+            
             $newUri        = new Uri($uriTarget);
             $request       = $request->withUri($newUri);
             $uriTargetPath = $newUri->getPath();

@@ -33,13 +33,23 @@ return [
     'expressive-redirect-handler' => [
         'allow_not_routed_url' => false,
         'default_url' => '/',
+        
+        'options' => [
+            'exclude_urls' => [
+                // 'https://www.github.com/samsonasik/ExpressiveRedirectHandler',
+            ], // to allow excluded urls to always be redirected
+        ],
     ],
 
     // ...
 ];
 ```
 
-It means, we can't allow to make redirect to outside registered routes, whenever found un-registered url in routes, then we will be redirected to default_url. Also, it disable to self, so you can't redirect to self.
+It means, we can't allow to make redirect to outside registered routes, whenever found un-registered url in routes, then we will be redirected to default_url.  For specific urls that exceptional ( allowed to be redirected even not registered in routes), you can register at exclude_urls options.
+
+Also, it disable to self, so you can't redirect to self.
+
+>>> if you define exclude_urls which one of them is your url, its your risk :).
 
 2. When you want to redirect to specific url based on header status code
 ------------------------------------------------------------------------
