@@ -49,7 +49,7 @@ It means, we can't allow to make redirect to outside registered routes, whenever
 
 Also, it disable to self, so you can't redirect to self.
 
-> if you define exclude_urls which one of them is your own current url, its your risk :).
+> if you define exclude_urls which one of them is your own current url, its your risk to still get "infinite" redirection loops. so, make sure exclude_urls is not your own urls.
 
 2. When you want to redirect to specific url based on header status code
 ------------------------------------------------------------------------
