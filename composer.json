@@ -34,5 +34,10 @@
     },
     "config": {
         "process-timeout": 5000
+    },
+    "extra": {
+        "zf": {
+            "config-provider": "ExpressiveRedirectHandler\\ConfigProvider"
+        }
     }
 }
