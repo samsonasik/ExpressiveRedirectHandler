@@ -81,7 +81,7 @@ Installation
 
  - Require via composer
 ```bash
-$ composer require samsonasik/expressive-redirect-handler:0.*
+composer require samsonasik/expressive-redirect-handler
 ```
 
  - Copy `vendor/samsonasik/samsonasik/expressive-redirect-handler/config/expressive-redirect-handler.local.php.dist` to `config/autoload/expressive-redirect-handler.local.php` and modify on our needs.
