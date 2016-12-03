@@ -16,6 +16,9 @@ return [
             'exclude_urls' => [
                 // 'https://www.github.com/samsonasik/ExpressiveRedirectHandler',
             ], // to allow excluded urls to always be redirected
+            'exclude_hosts' => [
+                // 'www.github.com'
+            ],
         ],
     ],
 

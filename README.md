@@ -33,11 +33,14 @@ return [
     'expressive-redirect-handler' => [
         'allow_not_routed_url' => false,
         'default_url' => '/',
-        
+
         'options' => [
             'exclude_urls' => [
                 // 'https://www.github.com/samsonasik/ExpressiveRedirectHandler',
             ], // to allow excluded urls to always be redirected
+            'exclude_hosts' => [
+                // 'www.github.com'
+            ],
         ],
     ],
 
@@ -45,17 +48,17 @@ return [
 ];
 ```
 
-It means, we can't allow to make redirect to outside registered routes, whenever found un-registered url in routes, then we will be redirected to default_url.  For specific urls that exceptional ( allowed to be redirected even not registered in routes), you can register at exclude_urls options.
+It means, we can't allow to make redirect to outside registered routes, whenever found un-registered url in routes, then we will be redirected to default_url.  For specific urls that exceptional ( allowed to be redirected even not registered in routes), you can register at exclude_urls or exclude_hosts options.
 
 Also, it disable to self, so you can't redirect to self.
 
-> if you define exclude_urls which one of them is your own current url, its your risk to still get "infinite" redirection loops. so, make sure exclude_urls is not your own urls.
+> if you define exclude_urls and/or exclude_hosts options, which one of them is your own current url, its your risk to still get "infinite" redirection loops. so, make sure exclude_urls is not your own urls.
 
 2. When you want to redirect to specific url based on header status code
 ------------------------------------------------------------------------
 
 ```php
-<?php 
+<?php
 return [
 
     'expressive-redirect-handler' => [

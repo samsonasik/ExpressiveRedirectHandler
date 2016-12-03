@@ -75,7 +75,7 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(Response::class, $response);
     }
-    
+
     /**
      * @dataProvider provideNextForInvokeWithResponse
      */
@@ -83,7 +83,7 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
     {
         $request  = new ServerRequest(['/']);
         $response = new Response();
-        
+
         $config = [
             'allow_not_routed_url' => false,
             'default_url' => '/',
@@ -95,7 +95,7 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
         ];
-        
+
         $this->middleware = new RedirectHandlerAction(
             $config,
             $this->router->reveal()
@@ -109,7 +109,7 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(Response::class, $response);
     }
-    
+
     public function testInvokeWithResponseWithEnabledHeaderHandler()
     {
         $config = [
@@ -225,8 +225,8 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
     }
-    
-    public function testInvokeRedirectResponseWithExcludeOptions()
+
+    public function testInvokeRedirectResponseWithExcludeUrlsOptions()
     {
         $config = [
             'allow_not_routed_url' => false,
@@ -234,6 +234,41 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
             'options' => [
                 'exclude_urls' => [
                     'https://www.github.com/samsonasik/ExpressiveRedirectHandler',
+                ],
+            ],
+        ];
+        $router = $this->prophesize(RouterInterface::class);
+
+        $middleware = new RedirectHandlerAction(
+            $config,
+            $router->reveal()
+        );
+
+        $request  = $this->prophesize(ServerRequest::class);
+        $response = new RedirectResponse('https://www.github.com/samsonasik/ExpressiveRedirectHandler');
+        $next = function ($req, $res, $err = null) use ($response) {
+            return $response;
+        };
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+
+        $response = $middleware->__invoke(
+            $request->reveal(),
+            $response,
+            $next
+        );
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+    }
+
+    public function testInvokeRedirectResponseWithExcludeHostsOptions()
+    {
+        $config = [
+            'allow_not_routed_url' => false,
+            'default_url' => '/',
+            'options' => [
+                'exclude_hosts' => [
+                    'www.github.com',
                 ],
             ],
         ];
