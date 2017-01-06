@@ -41,6 +41,9 @@ return [
             'exclude_hosts' => [
                 // 'www.github.com'
             ],
+            'exclude_domains' => [
+                // 'google.com',
+            ],
         ],
     ],
 
@@ -48,11 +51,11 @@ return [
 ];
 ```
 
-It means, we can't allow to make redirect to outside registered routes, whenever found un-registered url in routes, then we will be redirected to default_url.  For specific urls that exceptional ( allowed to be redirected even not registered in routes), you can register at exclude_urls or exclude_hosts options.
+It means, we can't allow to make redirect to outside registered routes, whenever found un-registered url in routes, then we will be redirected to default_url. It also disable redirect to self, so you can't redirect to self.
 
-Also, it disable to self, so you can't redirect to self.
+For specific urls that exceptional ( allowed to be redirected even not registered in routes), you can register at `exclude_urls`/`exclude_hosts`/`exclude_domains` options.
 
-> if you define exclude_urls and/or exclude_hosts options, which one of them is your own current url, its your risk to still get "infinite" redirection loops. so, make sure exclude_urls is not your own urls.
+> if you define exclude_urls/exclude_hosts/exclude_domains options, which one of them is your own current url/host/domain, its your risk to still get "infinite" redirection loops. so, make sure exclude_urls/exclude_hosts/exclude_domains is not your current own.
 
 2. When you want to redirect to specific url based on header status code
 ------------------------------------------------------------------------

@@ -296,6 +296,76 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(RedirectResponse::class, $response);
     }
 
+    public function testInvokeRedirectResponseWithExcludeDomainsOptions()
+    {
+        $config = [
+            'allow_not_routed_url' => false,
+            'default_url' => '/',
+            'options' => [
+                'exclude_domains' => [
+                    'github.com',
+                ],
+            ],
+        ];
+        $router = $this->prophesize(RouterInterface::class);
+
+        $middleware = new RedirectHandlerAction(
+            $config,
+            $router->reveal()
+        );
+
+        $request  = $this->prophesize(ServerRequest::class);
+        $response = new RedirectResponse('https://www.github.com/samsonasik/ExpressiveRedirectHandler');
+        $next = function ($req, $res, $err = null) use ($response) {
+            return $response;
+        };
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+
+        $response = $middleware->__invoke(
+            $request->reveal(),
+            $response,
+            $next
+        );
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+    }
+
+    /**
+     *  @expectedException \InvalidArgumentException
+     *  @expectedExceptionMessage example.invalid is not a valid domain
+     */
+    public function testInvokeRedirectResponseWithExcludeDomainsOptionsWithInvalidDomain()
+    {
+        $config = [
+            'allow_not_routed_url' => false,
+            'default_url' => '/',
+            'options' => [
+                'exclude_domains' => [
+                    'example.invalid',
+                ],
+            ],
+        ];
+        $router = $this->prophesize(RouterInterface::class);
+
+        $middleware = new RedirectHandlerAction(
+            $config,
+            $router->reveal()
+        );
+
+        $request  = $this->prophesize(ServerRequest::class);
+        $response = new RedirectResponse('https://www.github.com/samsonasik/ExpressiveRedirectHandler');
+        $next = function ($req, $res, $err = null) use ($response) {
+            return $response;
+        };
+
+        $response = $middleware->__invoke(
+            $request->reveal(),
+            $response,
+            $next
+        );
+    }
+
     public function testInvokeRedirectResponseDisallowNotRoutedUrlAndRouteMatchIsFailure()
     {
         $config = [

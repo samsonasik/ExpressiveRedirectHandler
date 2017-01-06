@@ -19,6 +19,9 @@ return [
             'exclude_hosts' => [
                 // 'www.github.com'
             ],
+            'exclude_domains' => [
+                // 'google.com',
+            ],
         ],
     ],
 

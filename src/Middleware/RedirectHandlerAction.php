@@ -19,6 +19,9 @@
 
 namespace ExpressiveRedirectHandler\Middleware;
 
+use InvalidArgumentException;
+use Pdp\Parser;
+use Pdp\PublicSuffixListManager;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Diactoros\Uri;
@@ -51,7 +54,7 @@ class RedirectHandlerAction
             $statusCode = $response->getStatusCode();
             foreach ($this->config['header_handler']['headers'] as $code => $redirect) {
                 if (! is_string($redirect)) {
-                    throw new \InvalidArgumentException(sprintf(
+                    throw new InvalidArgumentException(sprintf(
                         'redirect value for %s must be a string',
                         $code
                     ));
@@ -66,13 +69,36 @@ class RedirectHandlerAction
             $allow_not_routed_url = (isset($this->config['allow_not_routed_url'])) ? $this->config['allow_not_routed_url'] : false;
             $exclude_urls = (isset($this->config['options']['exclude_urls'])) ? $this->config['options']['exclude_urls'] : [];
             $exclude_hosts = (isset($this->config['options']['exclude_hosts'])) ? $this->config['options']['exclude_hosts'] : [];
+            $exclude_domains = (isset($this->config['options']['exclude_domains'])) ? $this->config['options']['exclude_domains'] : [];
 
-            $uriTarget   = $response->getHeader('location')[0];
+            $uriTarget     = $response->getHeader('location')[0];
             $uriTargetHost = (new Uri($uriTarget))->getHost();
-            
+
+            $redirectOfDomain = false;
+            foreach ($exclude_domains as $key => $domain) {
+
+                if ($key === 0) {
+                    $pslManager = new PublicSuffixListManager();
+                    $parser     = new Parser($pslManager->getList());
+                }
+
+                if (! $parser->isSuffixValid($domain)) {
+                    throw new InvalidArgumentException(sprintf(
+                        '%s is not a valid domain',
+                        $domain
+                    ));
+                }
+
+                if ($parser->parseUrl($uriTarget)->host->registerableDomain === $domain) {
+                    $redirectOfDomain = true;
+                }
+
+            }
+
             if (true === $allow_not_routed_url ||
                 in_array($uriTarget, $exclude_urls) ||
-                in_array($uriTargetHost, $exclude_hosts)
+                in_array($uriTargetHost, $exclude_hosts) ||
+                $redirectOfDomain
             ) {
                 return $response;
             }
