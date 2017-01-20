@@ -33,6 +33,9 @@ class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
     /** @var RedirectHandlerAction */
     protected $middleware;
 
+    /** @var RouterInterface */
+    protected $router;
+
     public function setUp()
     {
         $config = [
