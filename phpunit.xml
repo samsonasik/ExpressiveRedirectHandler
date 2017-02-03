@@ -15,7 +15,6 @@
         </whitelist>
     </filter>
     <logging>
-        <log type="coverage-php" target="./build/coverage/coverage-expressive-redirect-handler.cov"/>
-        <log type="coverage-html" target="./test/html-report/" charset="UTF-8" yui="true" />
+        <log type="coverage-clover" target="build/logs/clover.xml"/>
     </logging>
 </phpunit>

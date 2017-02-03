@@ -27,8 +27,13 @@ use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Uri;
 use Zend\Expressive\Router\RouteResult;
+use PHPUnit\Framework\TestCase;
 
-class RedirectHandlerActionTest extends \PHPUnit_Framework_TestCase
+if (class_exists(\PHPUnit_Framework_TestCase::class)) {
+    class_alias(\PHPUnit_Framework_TestCase::class, TestCase::class);
+}
+
+class RedirectHandlerActionTest extends TestCase
 {
     /** @var RedirectHandlerAction */
     protected $middleware;

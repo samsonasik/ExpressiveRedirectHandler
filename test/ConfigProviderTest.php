@@ -20,8 +20,13 @@
 namespace ExpressiveRedirectHandlerTest;
 
 use ExpressiveRedirectHandler\ConfigProvider;
+use PHPUnit\Framework\TestCase;
 
-class ConfigProviderTest extends \PHPUnit_Framework_TestCase
+if (class_exists(\PHPUnit_Framework_TestCase::class)) {
+    class_alias(\PHPUnit_Framework_TestCase::class, TestCase::class);
+}
+
+class ConfigProviderTest extends TestCase
 {
     /** @var ConfigProvider */
     protected $configProvider;
@@ -30,7 +35,7 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
     {
         $this->configProvider = new ConfigProvider();
     }
-    
+
     public function testInvoke()
     {
         $expected = [
@@ -40,7 +45,7 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
         ];
-        
+
         $this->assertSame($expected, $this->configProvider->__invoke());
     }
 }

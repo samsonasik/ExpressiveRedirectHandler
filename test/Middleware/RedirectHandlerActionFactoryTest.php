@@ -23,8 +23,13 @@ use ExpressiveRedirectHandler\Middleware\RedirectHandlerAction;
 use ExpressiveRedirectHandler\Middleware\RedirectHandlerActionFactory;
 use Interop\Container\ContainerInterface;
 use Zend\Expressive\Router\RouterInterface;
+use PHPUnit\Framework\TestCase;
 
-class RedirectHandlerActionFactoryTest extends \PHPUnit_Framework_TestCase
+if (class_exists(\PHPUnit_Framework_TestCase::class)) {
+    class_alias(\PHPUnit_Framework_TestCase::class, TestCase::class);
+}
+
+class RedirectHandlerActionFactoryTest extends TestCase
 {
     /** @var ContainerInterface */
     protected $container;
