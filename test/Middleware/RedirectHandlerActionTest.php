@@ -29,7 +29,7 @@ use Zend\Diactoros\Uri;
 use Zend\Expressive\Router\RouteResult;
 use PHPUnit\Framework\TestCase;
 
-if (class_exists(\PHPUnit_Framework_TestCase::class)) {
+if (! class_exists(TestCase::class)) {
     class_alias(\PHPUnit_Framework_TestCase::class, TestCase::class);
 }
 
