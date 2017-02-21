@@ -26,6 +26,7 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Uri;
+use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
 use PHPUnit\Framework\TestCase;
 
@@ -51,7 +52,7 @@ class RedirectHandlerActionTest extends TestCase
         $request      = new ServerRequest(['/']);
         $request      = $request->withUri(new Uri($config['default_url']));
         $this->router->match($request)
-                     ->willReturn(RouteResult::fromRouteMatch('home', function() {}, []));
+                     ->willReturn(RouteResult::fromRoute(new Route('/', 'home')));
 
         $this->middleware = new RedirectHandlerAction(
             $config,
@@ -146,7 +147,7 @@ class RedirectHandlerActionTest extends TestCase
         $request->withUri(Argument::type(Uri::class))->willReturn($request);
         $request->getUri()->willReturn($uri);
 
-        $routeResult = RouteResult::fromRouteMatch('foo', 'foo', []);
+        $routeResult = RouteResult::fromRoute(new Route('/foo', 'foo'));
         $router->match($request)->willReturn($routeResult);
 
         $response = new Response();
@@ -445,7 +446,7 @@ class RedirectHandlerActionTest extends TestCase
         $request->withUri(Argument::type(Uri::class))->willReturn($request);
         $request->getUri()->willReturn($uri);
 
-        $routeResult = RouteResult::fromRouteMatch('foo', 'foo', []);
+        $routeResult = RouteResult::fromRoute(new Route('/foo', 'foo'));
         $router->match($request)->willReturn($routeResult);
 
         $response = new RedirectResponse('/foo');
@@ -474,7 +475,8 @@ class RedirectHandlerActionTest extends TestCase
             return $response;
         };
 
-        $routeResult = RouteResult::fromRouteMatch('home', function() {}, []);
+        
+        $routeResult = RouteResult::fromRoute(new Route('/', 'home'));
         $uri = $this->prophesize(Uri::class);
         $uri->getPath()->willReturn('/')->shouldBeCalled();
         $request->getUri()->willReturn($uri)->shouldBeCalled();
