@@ -92,6 +92,11 @@ composer require samsonasik/expressive-redirect-handler
 
  - Copy `vendor/samsonasik/samsonasik/expressive-redirect-handler/config/expressive-redirect-handler.local.php.dist` to `config/autoload/expressive-redirect-handler.local.php` and modify on our needs.
 
+For [zend-expressive-skeleton](https://github.com/zendframework/zend-expressive-skeleton) ^2.0 (upcoming), you need to open `config/pipeline.php` and add:
+
+```php
+$app->pipe(ExpressiveRedirectHandler\Middleware\RedirectHandlerAction::class);
+```
 
 Contributing
 ------------
