@@ -98,6 +98,8 @@ For [zend-expressive-skeleton](https://github.com/zendframework/zend-expressive-
 $app->pipe(ExpressiveRedirectHandler\Middleware\RedirectHandlerAction::class);
 ```
 
+at the very first pipeline records.
+
 Contributing
 ------------
 Contributions are very welcome. Please read [CONTRIBUTING.md](https://github.com/samsonasik/ExpressiveRedirectHandler/blob/master/CONTRIBUTING.md)
