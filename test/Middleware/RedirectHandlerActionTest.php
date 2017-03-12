@@ -51,8 +51,14 @@ class RedirectHandlerActionTest extends TestCase
         $this->router = $this->prophesize(RouterInterface::class);
         $request      = new ServerRequest(['/']);
         $request      = $request->withUri(new Uri($config['default_url']));
-        $this->router->match($request)
-                     ->willReturn(RouteResult::fromRoute(new Route('/', 'home')));
+
+        if (method_exists(RouteResult::class, 'fromRoute')) {
+            $this->router->match($request)
+                         ->willReturn(RouteResult::fromRoute(new Route('/', 'home')));
+        } else {
+            $this->router->match($request)
+                         ->willReturn(RouteResult::fromRouteMatch('home', 'home', []));
+        }
 
         $this->middleware = new RedirectHandlerAction(
             $config,
@@ -147,7 +153,12 @@ class RedirectHandlerActionTest extends TestCase
         $request->withUri(Argument::type(Uri::class))->willReturn($request);
         $request->getUri()->willReturn($uri);
 
-        $routeResult = RouteResult::fromRoute(new Route('/foo', 'foo'));
+        if (method_exists(RouteResult::class, 'fromRoute')) {
+            $routeResult = RouteResult::fromRoute(new Route('/foo', 'foo'));
+        } else {
+            $routeResult = RouteResult::fromRouteMatch('foo', 'foo', []);
+        }
+
         $router->match($request)->willReturn($routeResult);
 
         $response = new Response();
@@ -446,7 +457,11 @@ class RedirectHandlerActionTest extends TestCase
         $request->withUri(Argument::type(Uri::class))->willReturn($request);
         $request->getUri()->willReturn($uri);
 
-        $routeResult = RouteResult::fromRoute(new Route('/foo', 'foo'));
+        if (method_exists(RouteResult::class, 'fromRoute')) {
+            $routeResult = RouteResult::fromRoute(new Route('/foo', 'foo'));
+        } else {
+            $routeResult = RouteResult::fromRouteMatch('foo', 'foo', []);
+        }
         $router->match($request)->willReturn($routeResult);
 
         $response = new RedirectResponse('/foo');
@@ -475,8 +490,12 @@ class RedirectHandlerActionTest extends TestCase
             return $response;
         };
 
-        
-        $routeResult = RouteResult::fromRoute(new Route('/', 'home'));
+
+        if (method_exists(RouteResult::class, 'fromRoute')) {
+            $routeResult = RouteResult::fromRoute(new Route('/', 'home'));
+        } else {
+            $routeResult = RouteResult::fromRouteMatch('home', 'home', []);
+        }
         $uri = $this->prophesize(Uri::class);
         $uri->getPath()->willReturn('/')->shouldBeCalled();
         $request->getUri()->willReturn($uri)->shouldBeCalled();
