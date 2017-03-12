@@ -20,12 +20,14 @@ matrix:
     - php: 7.1
       env:
         - DEPS=latest
+    - php: hhvm
+      env:
+        - DEPS=lowest
+    - php: hhvm
+      env:
+        - DEPS=latest
 
-before_install:
-  - mkdir -p build/logs
-  - composer self-update
-
-install:
+before_script:
   - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable --no-interaction ; fi
   - if [[ $DEPS == 'latest' ]]; then travis_retry composer install --prefer-source --no-interaction ; fi
 
