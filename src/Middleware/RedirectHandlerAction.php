@@ -53,8 +53,8 @@ class RedirectHandlerAction
         ) {
             $statusCode = $response->getStatusCode();
             foreach ($this->config['header_handler']['headers'] as $code => $redirect) {
-                if (! is_string($redirect)) {
-                    throw new InvalidArgumentException(sprintf(
+                if (! \is_string($redirect)) {
+                    throw new InvalidArgumentException(\sprintf(
                         'redirect value for %s must be a string',
                         $code
                     ));
@@ -83,7 +83,7 @@ class RedirectHandlerAction
                 }
 
                 if (! $parser->isSuffixValid($domain)) {
-                    throw new InvalidArgumentException(sprintf(
+                    throw new InvalidArgumentException(\sprintf(
                         '%s is not a valid domain',
                         $domain
                     ));
@@ -96,8 +96,8 @@ class RedirectHandlerAction
             }
 
             if (true === $allow_not_routed_url ||
-                in_array($uriTarget, $exclude_urls) ||
-                in_array($uriTargetHost, $exclude_hosts) ||
+                \in_array($uriTarget, $exclude_urls) ||
+                \in_array($uriTargetHost, $exclude_hosts) ||
                 $redirectOfDomain
             ) {
                 return $response;
