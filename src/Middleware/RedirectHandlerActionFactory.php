@@ -20,11 +20,15 @@
 namespace ExpressiveRedirectHandler\Middleware;
 
 use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Zend\Expressive\Router\RouterInterface;
 
 class RedirectHandlerActionFactory
 {
-    public function __invoke(ContainerInterface $container)
+    /**
+     * @param ContainerInterface|PsrContainerInterface $container
+     */
+    public function __invoke($container)
     {
         $config = $container->get('config');
         $expressive_redirect_handler_config = (isset($config['expressive-redirect-handler']))

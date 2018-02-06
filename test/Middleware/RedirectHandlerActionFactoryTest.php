@@ -22,6 +22,7 @@ namespace ExpressiveRedirectHandlerTest\Middleware;
 use ExpressiveRedirectHandler\Middleware\RedirectHandlerAction;
 use ExpressiveRedirectHandler\Middleware\RedirectHandlerActionFactory;
 use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Zend\Expressive\Router\RouterInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -34,9 +35,13 @@ class RedirectHandlerActionFactoryTest extends TestCase
     /** @var ContainerInterface */
     protected $container;
 
-    public function setUp()
+    protected function setUp()
     {
-        $this->container = $this->prophesize(ContainerInterface::class);
+        if (interface_exists(PsrContainerInterface::class)) {
+            $this->container = $this->prophesize(PsrContainerInterface::class);
+        } else {
+            $this->container = $this->prophesize(ContainerInterface::class);
+        }
     }
 
     public function testFactory()
