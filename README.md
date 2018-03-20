@@ -7,6 +7,10 @@ ExpressiveRedirectHandler
 [![Coverage Status](https://coveralls.io/repos/samsonasik/ExpressiveRedirectHandler/badge.svg?branch=master)](https://coveralls.io/r/samsonasik/ExpressiveRedirectHandler)
 [![Downloads](https://img.shields.io/packagist/dt/samsonasik/expressive-redirect-handler.svg?style=flat-square)](https://packagist.org/packages/samsonasik/expressive-redirect-handler)
 
+> This is README for version ^1.0 which only support ZF Expressive version 3 with php ^7.1.
+
+> For version 0.*, you can read at [version 0.* readme](https://github.com/samsonasik/ExpressiveRedirectHandler/tree/0.x.x) which still ZF Expressive version 1 and 2 with php ^5.6|^7.0 support.
+
 *ExpressiveRedirectHandler* is a package that contains [zend-expressive](https://github.com/zendframework/zend-expressive) middleware for handling redirect that fit with [zend-expressive-skeleton](https://github.com/zendframework/zend-expressive-skeleton) for following conditions:
 
 1. When the given url to `RedirectResponse` is not registered in routing config
@@ -41,9 +45,6 @@ return [
             'exclude_hosts' => [
                 // 'www.github.com'
             ],
-            'exclude_domains' => [
-                // 'google.com',
-            ],
         ],
     ],
 
@@ -53,9 +54,9 @@ return [
 
 It means, we can't allow to make redirect to outside registered routes, whenever found un-registered url in routes, then we will be redirected to default_url. It also disable redirect to self, so you can't redirect to self.
 
-For specific urls that exceptional ( allowed to be redirected even not registered in routes), you can register at `exclude_urls`/`exclude_hosts`/`exclude_domains` options.
+For specific urls that exceptional ( allowed to be redirected even not registered in routes), you can register at `exclude_urls`/`exclude_hosts` options.
 
-> if you define exclude_urls/exclude_hosts/exclude_domains options, which one of them is your own current url/host/domain, its your risk to still get "infinite" redirection loops. so, make sure exclude_urls/exclude_hosts/exclude_domains is not your current own.
+> if you define exclude_urls/exclude_hosts options, which one of them is your own current url/host/domain, its your risk to still get "infinite" redirection loops. so, make sure exclude_urls/exclude_hosts is not your current own.
 
 2. When you want to redirect to specific url based on header status code
 ------------------------------------------------------------------------
@@ -92,7 +93,7 @@ composer require samsonasik/expressive-redirect-handler
 
  - Copy `vendor/samsonasik/expressive-redirect-handler/config/expressive-redirect-handler.local.php.dist` to `config/autoload/expressive-redirect-handler.local.php` and modify on our needs.
 
-For [zend-expressive-skeleton](https://github.com/zendframework/zend-expressive-skeleton) ^2.0 (upcoming), you need to open `config/pipeline.php` and add:
+ - Open `config/pipeline.php` and add:
 
 ```php
 $app->pipe(ExpressiveRedirectHandler\Middleware\RedirectHandlerAction::class);
