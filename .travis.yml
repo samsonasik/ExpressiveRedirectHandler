@@ -2,32 +2,18 @@ language: php
 
 matrix:
   include:
-    - php: 5.6
-      env:
-        - DEPS=lowest
-    - php: 5.6
-      env:
-        - DEPS=latest
-    - php: 7.0
-      env:
-        - DEPS=lowest
-    - php: 7.0
-      env:
-        - DEPS=latest
     - php: 7.1
       env:
         - DEPS=lowest
     - php: 7.1
       env:
         - DEPS=latest
-    - php: hhvm
+    - php: 7.2
       env:
         - DEPS=lowest
-    - php: hhvm
+    - php: 7.2
       env:
         - DEPS=latest
-  allow_failures:
-    - php: hhvm
 
 before_script:
   - mkdir -p build/logs
@@ -38,7 +24,7 @@ before_script:
 
 script:
   - vendor/bin/phpunit --coverage-text
-  - php ./vendor/bin/coveralls -v --exclude-no-stmt
+  - if [[ $DEPS == 'latest' ]]; then php ./vendor/bin/php-coveralls -v --exclude-no-stmt ; fi
 
 notifications:
     email: false

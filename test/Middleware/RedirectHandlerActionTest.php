@@ -20,19 +20,17 @@
 namespace ExpressiveRedirectHandlerTest\Middleware;
 
 use ExpressiveRedirectHandler\Middleware\RedirectHandlerAction;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Zend\Expressive\Router\RouterInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Uri;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
-use PHPUnit\Framework\TestCase;
-
-if (! class_exists(TestCase::class)) {
-    class_alias(\PHPUnit_Framework_TestCase::class, TestCase::class);
-}
+use Zend\Expressive\Router\RouterInterface;
 
 class RedirectHandlerActionTest extends TestCase
 {
@@ -52,13 +50,10 @@ class RedirectHandlerActionTest extends TestCase
         $request      = new ServerRequest(['/']);
         $request      = $request->withUri(new Uri($config['default_url']));
 
-        if (method_exists(RouteResult::class, 'fromRoute')) {
-            $this->router->match($request)
-                         ->willReturn(RouteResult::fromRoute(new Route('/', 'home')));
-        } else {
-            $this->router->match($request)
-                         ->willReturn(RouteResult::fromRouteMatch('home', 'home', []));
-        }
+        $routeHome = RouteResult::fromRoute(
+            new Route('/', $this->prophesize(MiddlewareInterface::class)->reveal())
+        );
+        $this->router->match($request)->willReturn($routeHome);
 
         $this->middleware = new RedirectHandlerAction(
             $config,
@@ -66,35 +61,23 @@ class RedirectHandlerActionTest extends TestCase
         );
     }
 
-    public function provideNextForInvokeWithResponse()
-    {
-        return [
-            [null],
-            [function ($req, $res, $err = null) { return new Response(); }]
-        ];
-    }
-
-    /**
-     * @dataProvider provideNextForInvokeWithResponse
-     */
-    public function testInvokeWithResponse($next)
+    public function testInvokeWithResponse200()
     {
         $request  = new ServerRequest(['/']);
         $response = new Response();
 
-        $response = $this->middleware->__invoke(
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request)->willReturn($response);
+
+        $response = $this->middleware->process(
             $request,
-            $response,
-            $next
+            $handler->reveal()
         );
 
         $this->assertInstanceOf(Response::class, $response);
     }
 
-    /**
-     * @dataProvider provideNextForInvokeWithResponse
-     */
-    public function testInvokeWithResponseWithDisabledHeaderHandler($next)
+    public function testInvokeWithResponseWithDisabledHeaderHandler200()
     {
         $request  = new ServerRequest(['/']);
         $response = new Response();
@@ -116,10 +99,12 @@ class RedirectHandlerActionTest extends TestCase
             $this->router->reveal()
         );
 
-        $response = $this->middleware->__invoke(
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request)->willReturn($response);
+
+        $response = $this->middleware->process(
             $request,
-            $response,
-            $next
+            $handler->reveal()
         );
 
         $this->assertInstanceOf(Response::class, $response);
@@ -153,24 +138,18 @@ class RedirectHandlerActionTest extends TestCase
         $request->withUri(Argument::type(Uri::class))->willReturn($request);
         $request->getUri()->willReturn($uri);
 
-        if (method_exists(RouteResult::class, 'fromRoute')) {
-            $routeResult = RouteResult::fromRoute(new Route('/foo', 'foo'));
-        } else {
-            $routeResult = RouteResult::fromRouteMatch('foo', 'foo', []);
-        }
-
+        $routeResult = RouteResult::fromRoute(new Route('/foo', $this->prophesize(MiddlewareInterface::class)->reveal()));
         $router->match($request)->willReturn($routeResult);
 
         $response = new Response();
         $response = $response->withStatus(401);
-        $next = function ($req, $res, $err = null) use ($response) {
-            return $response;
-        };
 
-        $response = $middleware->__invoke(
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())->willReturn($response);
+
+        $response = $middleware->process(
             $request->reveal(),
-            $response,
-            $next
+            $handler->reveal()
         );
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
@@ -205,14 +184,12 @@ class RedirectHandlerActionTest extends TestCase
         $request  = $this->prophesize(ServerRequest::class);
         $response = new Response();
         $response = $response->withStatus(401);
-        $next = function ($req, $res, $err = null) use ($response) {
-            return $response;
-        };
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())->willReturn($response);
 
-        $response = $middleware->__invoke(
+        $response = $middleware->process(
             $request->reveal(),
-            $response,
-            $next
+            $handler->reveal()
         );
     }
 
@@ -231,16 +208,12 @@ class RedirectHandlerActionTest extends TestCase
 
         $request  = $this->prophesize(ServerRequest::class);
         $response = new RedirectResponse('/foo');
-        $next = function ($req, $res, $err = null) use ($response) {
-            return $response;
-        };
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())->willReturn($response);
 
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-
-        $response = $middleware->__invoke(
+        $response = $middleware->process(
             $request->reveal(),
-            $response,
-            $next
+            $handler->reveal()
         );
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
@@ -266,16 +239,14 @@ class RedirectHandlerActionTest extends TestCase
 
         $request  = $this->prophesize(ServerRequest::class);
         $response = new RedirectResponse('https://www.github.com/samsonasik/ExpressiveRedirectHandler');
-        $next = function ($req, $res, $err = null) use ($response) {
-            return $response;
-        };
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())->willReturn($response);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
 
-        $response = $middleware->__invoke(
+        $response = $middleware->process(
             $request->reveal(),
-            $response,
-            $next
+            $handler->reveal()
         );
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
@@ -301,89 +272,17 @@ class RedirectHandlerActionTest extends TestCase
 
         $request  = $this->prophesize(ServerRequest::class);
         $response = new RedirectResponse('https://www.github.com/samsonasik/ExpressiveRedirectHandler');
-        $next = function ($req, $res, $err = null) use ($response) {
-            return $response;
-        };
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())->willReturn($response);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
 
-        $response = $middleware->__invoke(
+        $response = $middleware->process(
             $request->reveal(),
-            $response,
-            $next
+            $handler->reveal()
         );
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
-    }
-
-    public function testInvokeRedirectResponseWithExcludeDomainsOptions()
-    {
-        $config = [
-            'allow_not_routed_url' => false,
-            'default_url' => '/',
-            'options' => [
-                'exclude_domains' => [
-                    'github.com',
-                ],
-            ],
-        ];
-        $router = $this->prophesize(RouterInterface::class);
-
-        $middleware = new RedirectHandlerAction(
-            $config,
-            $router->reveal()
-        );
-
-        $request  = $this->prophesize(ServerRequest::class);
-        $response = new RedirectResponse('https://www.github.com/samsonasik/ExpressiveRedirectHandler');
-        $next = function ($req, $res, $err = null) use ($response) {
-            return $response;
-        };
-
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-
-        $response = $middleware->__invoke(
-            $request->reveal(),
-            $response,
-            $next
-        );
-
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-    }
-
-    /**
-     *  @expectedException \InvalidArgumentException
-     *  @expectedExceptionMessage example.invalid is not a valid domain
-     */
-    public function testInvokeRedirectResponseWithExcludeDomainsOptionsWithInvalidDomain()
-    {
-        $config = [
-            'allow_not_routed_url' => false,
-            'default_url' => '/',
-            'options' => [
-                'exclude_domains' => [
-                    'example.invalid',
-                ],
-            ],
-        ];
-        $router = $this->prophesize(RouterInterface::class);
-
-        $middleware = new RedirectHandlerAction(
-            $config,
-            $router->reveal()
-        );
-
-        $request  = $this->prophesize(ServerRequest::class);
-        $response = new RedirectResponse('https://www.github.com/samsonasik/ExpressiveRedirectHandler');
-        $next = function ($req, $res, $err = null) use ($response) {
-            return $response;
-        };
-
-        $response = $middleware->__invoke(
-            $request->reveal(),
-            $response,
-            $next
-        );
     }
 
     public function testInvokeRedirectResponseDisallowNotRoutedUrlAndRouteMatchIsFailure()
@@ -406,20 +305,18 @@ class RedirectHandlerActionTest extends TestCase
 
         $request->withUri(Argument::type(Uri::class))->willReturn($request);
 
-        $routeResult = RouteResult::fromRouteFailure();
+        $routeResult = RouteResult::fromRouteFailure(null);
         $router->match($request)->willReturn($routeResult);
 
         $response = new RedirectResponse('/foo?query');
-        $next = function ($req, $res, $err = null) use ($response) {
-            return $response;
-        };
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())->willReturn($response);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
 
-        $response = $middleware->__invoke(
+        $response = $middleware->process(
             $request->reveal(),
-            $response,
-            $next
+            $handler->reveal()
         );
 
         $this->assertInstanceOf(Response::class, $response);
@@ -436,7 +333,7 @@ class RedirectHandlerActionTest extends TestCase
     /**
      * @dataProvider provideInvokeRedirectResponseDisallowNotRoutedUrlAndRouteMatchIsSuccess
      */
-    public function testInvokeRedirectResponseDisallowNotRoutedUrlAndRouteMatchIsSuccess($path, $isNull)
+    public function testInvokeRedirectResponseDisallowNotRoutedUrlAndRouteMatchIsSuccess($path, $isNotRedirected)
     {
         $config = [
             'allow_not_routed_url' => false,
@@ -457,26 +354,20 @@ class RedirectHandlerActionTest extends TestCase
         $request->withUri(Argument::type(Uri::class))->willReturn($request);
         $request->getUri()->willReturn($uri);
 
-        if (method_exists(RouteResult::class, 'fromRoute')) {
-            $routeResult = RouteResult::fromRoute(new Route('/foo', 'foo'));
-        } else {
-            $routeResult = RouteResult::fromRouteMatch('foo', 'foo', []);
-        }
+        $routeResult = RouteResult::fromRoute(new Route('/foo', $this->prophesize(MiddlewareInterface::class)->reveal()));
         $router->match($request)->willReturn($routeResult);
 
         $response = new RedirectResponse('/foo');
-        $next = function ($req, $res, $err = null) use ($response) {
-            return $response;
-        };
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())->willReturn($response);
 
-        $response = $middleware->__invoke(
+        $response = $middleware->process(
             $request->reveal(),
-            $response,
-            $next
+            $handler->reveal()
         );
 
-        if ($isNull) {
-            $this->assertNull($response);
+        if ($isNotRedirected) {
+            $this->assertInstanceOf(Response::class, $response);
         } else {
             $this->assertInstanceOf(RedirectResponse::class, $response);
         }
@@ -486,16 +377,12 @@ class RedirectHandlerActionTest extends TestCase
     {
         $request  = $this->prophesize(ServerRequest::class);
         $response = new RedirectResponse('/');
-        $next = function ($req, $res, $err = null) use ($response) {
-            return $response;
-        };
 
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())->willReturn($response);
 
-        if (method_exists(RouteResult::class, 'fromRoute')) {
-            $routeResult = RouteResult::fromRoute(new Route('/', 'home'));
-        } else {
-            $routeResult = RouteResult::fromRouteMatch('home', 'home', []);
-        }
+        $routeResult = RouteResult::fromRoute(new Route('/', $this->prophesize(MiddlewareInterface::class)->reveal()));
+
         $uri = $this->prophesize(Uri::class);
         $uri->getPath()->willReturn('/')->shouldBeCalled();
         $request->getUri()->willReturn($uri)->shouldBeCalled();
@@ -507,10 +394,9 @@ class RedirectHandlerActionTest extends TestCase
         $this->router->match($request)
                      ->willReturn($routeResult)->shouldBeCalled();
 
-        $response = $this->middleware->__invoke(
+        $response = $this->middleware->process(
             $request->reveal(),
-            $response,
-            $next
+            $handler->reveal()
         );
     }
 }

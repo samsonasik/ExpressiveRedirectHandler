@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -19,21 +21,15 @@
 
 namespace ExpressiveRedirectHandler\Middleware;
 
-use Interop\Container\ContainerInterface;
-use Psr\Container\ContainerInterface as PsrContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Expressive\Router\RouterInterface;
 
 class RedirectHandlerActionFactory
 {
-    /**
-     * @param ContainerInterface|PsrContainerInterface $container
-     */
-    public function __invoke($container)
+    public function __invoke(ContainerInterface $container) : RedirectHandlerAction
     {
         $config = $container->get('config');
-        $expressive_redirect_handler_config = (isset($config['expressive-redirect-handler']))
-                                              ? $config['expressive-redirect-handler']
-                                              : [];
+        $expressive_redirect_handler_config = $config['expressive-redirect-handler'] ?? [];
         $router = $container->get(RouterInterface::class);
 
         return new RedirectHandlerAction(
