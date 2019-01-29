@@ -23,7 +23,7 @@ before_script:
   - composer dump-autoload -o
 
 script:
-  - composer cs-check
+  - if [[ $DEPS == 'latest' ]]; then composer cs-check ; fi
   - vendor/bin/phpunit --coverage-text
   - if [[ $DEPS == 'latest' ]]; then php ./vendor/bin/php-coveralls -v --exclude-no-stmt ; fi
 
