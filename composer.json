@@ -2,7 +2,10 @@
     "name": "samsonasik/expressive-redirect-handler",
     "type": "library",
     "description": "Expressive middleware for URL Redirect handling",
-    "keywords": ["redirect","expressive"],
+    "keywords": [
+        "redirect",
+        "expressive"
+    ],
     "homepage": "https://github.com/samsonasik/ExpressiveRedirectHandler",
     "license": "MIT",
     "authors": [
@@ -19,10 +22,18 @@
         "zendframework/zend-diactoros": "^1.7.1"
     },
     "require-dev": {
-        "zendframework/zend-expressive": "^3.0",
-        "zendframework/zend-coding-standard": "^1.0",
         "phpunit/phpunit": "^7.0",
-        "satooshi/php-coveralls": "^2.0"
+        "satooshi/php-coveralls": "^2.0",
+        "zendframework/zend-coding-standard": "^1.0",
+        "zendframework/zend-expressive": "^3.0"
+    },
+    "config": {
+        "process-timeout": 5000
+    },
+    "extra": {
+        "zf": {
+            "config-provider": "ExpressiveRedirectHandler\\ConfigProvider"
+        }
     },
     "autoload": {
         "psr-4": {
@@ -32,14 +43,6 @@
     "autoload-dev": {
         "psr-4": {
             "ExpressiveRedirectHandlerTest\\": "test/"
-        }
-    },
-    "config": {
-        "process-timeout": 5000
-    },
-    "extra": {
-        "zf": {
-            "config-provider": "ExpressiveRedirectHandler\\ConfigProvider"
         }
     },
     "scripts": {
