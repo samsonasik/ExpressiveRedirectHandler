@@ -5,7 +5,7 @@ ExpressiveRedirectHandler
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Build Status](https://travis-ci.org/samsonasik/ExpressiveRedirectHandler.svg?branch=master)](https://travis-ci.org/samsonasik/ExpressiveRedirectHandler)
 [![Coverage Status](https://coveralls.io/repos/samsonasik/ExpressiveRedirectHandler/badge.svg?branch=master)](https://coveralls.io/r/samsonasik/ExpressiveRedirectHandler)
-[![Downloads](https://img.shields.io/packagist/dt/samsonasik/expressive-redirect-handler.svg?style=flat-square)](https://packagist.org/packages/samsonasik/expressive-redirect-handler)
+[![Downloads](https://poser.pugx.org/samsonasik/expressive-redirect-handler/downloads)](https://packagist.org/packages/samsonasik/expressive-redirect-handler)
 
 > This is README for version ^1.0 which only support ZF Expressive version 3 with php ^7.1.
 
