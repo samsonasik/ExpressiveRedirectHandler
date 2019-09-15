@@ -101,10 +101,7 @@ class RedirectHandlerAction implements MiddlewareInterface
             return $response->withHeader('location', $default_url);
         }
 
-        if ($currentPath === $default_url
-            || $uriTarget === $default_url
-            || $uriTargetPath === $default_url
-        ) {
+        if ($uriTarget === $default_url || $uriTargetPath === $default_url) {
             return new Response();
         }
 
