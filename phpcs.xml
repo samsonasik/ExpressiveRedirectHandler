@@ -2,10 +2,6 @@
 <ruleset name="Laminas Coding Standard">
     <rule ref="./vendor/laminas/laminas-coding-standard/src/LaminasCodingStandard/ruleset.xml"/>
 
-    <rule ref="WebimpressCodingStandard.NamingConventions.ValidVariableName">
-        <exclude name="WebimpressCodingStandard.NamingConventions.ValidVariableName.Invalid" />
-    </rule>
-
     <!-- Paths to check -->
     <file>src</file>
 </ruleset>
