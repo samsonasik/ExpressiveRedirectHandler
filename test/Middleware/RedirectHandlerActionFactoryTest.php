@@ -21,9 +21,9 @@ namespace ExpressiveRedirectHandlerTest\Middleware;
 
 use ExpressiveRedirectHandler\Middleware\RedirectHandlerAction;
 use ExpressiveRedirectHandler\Middleware\RedirectHandlerActionFactory;
+use Mezzio\Router\RouterInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use Mezzio\Router\RouterInterface;
 
 class RedirectHandlerActionFactoryTest extends TestCase
 {
