@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -19,21 +17,23 @@ declare(strict_types=1);
  * and is licensed under the MIT license.
  */
 
+declare(strict_types=1);
+
 namespace ExpressiveRedirectHandler\Middleware;
 
+use Mezzio\Router\RouterInterface;
 use Psr\Container\ContainerInterface;
-use Zend\Expressive\Router\RouterInterface;
 
 class RedirectHandlerActionFactory
 {
-    public function __invoke(ContainerInterface $container) : RedirectHandlerAction
+    public function __invoke(ContainerInterface $container): RedirectHandlerAction
     {
-        $config = $container->get('config');
-        $expressive_redirect_handler_config = $config['expressive-redirect-handler'] ?? [];
-        $router = $container->get(RouterInterface::class);
+        $config                          = $container->get('config');
+        $expressiveRedirectHandlerConfig = $config['expressive-redirect-handler'] ?? [];
+        $router                          = $container->get(RouterInterface::class);
 
         return new RedirectHandlerAction(
-            $expressive_redirect_handler_config,
+            $expressiveRedirectHandlerConfig,
             $router
         );
     }
