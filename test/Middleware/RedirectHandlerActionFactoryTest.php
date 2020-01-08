@@ -23,7 +23,7 @@ use ExpressiveRedirectHandler\Middleware\RedirectHandlerAction;
 use ExpressiveRedirectHandler\Middleware\RedirectHandlerActionFactory;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use Zend\Expressive\Router\RouterInterface;
+use Mezzio\Router\RouterInterface;
 
 class RedirectHandlerActionFactoryTest extends TestCase
 {
@@ -39,7 +39,7 @@ class RedirectHandlerActionFactoryTest extends TestCase
     {
         $factory = new RedirectHandlerActionFactory();
         $this->container->get('config')->willReturn([
-            'expressive-redirect-handler' => [
+            'mezzio-redirect-handler' => [
                 'allow_not_routed_url' => false,
                 'default_url' => '/',
             ],

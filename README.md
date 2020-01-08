@@ -7,11 +7,13 @@ ExpressiveRedirectHandler
 [![Coverage Status](https://coveralls.io/repos/samsonasik/ExpressiveRedirectHandler/badge.svg?branch=master)](https://coveralls.io/r/samsonasik/ExpressiveRedirectHandler)
 [![Downloads](https://poser.pugx.org/samsonasik/expressive-redirect-handler/downloads)](https://packagist.org/packages/samsonasik/expressive-redirect-handler)
 
-> This is README for version ^1.0 which only support ZF Expressive version 3 with php ^7.1.
+> This is README for version ^2.0 which only support Mezzio version 3 with php ^7.1.
+
+> This is README for version ^1.0, , you can read at [version 1.* readme](https://github.com/samsonasik/ExpressiveRedirectHandler/tree/1.x.x) which support ZF Expressive version 3 with php ^7.1.
 
 > For version 0.*, you can read at [version 0.* readme](https://github.com/samsonasik/ExpressiveRedirectHandler/tree/0.x.x) which still ZF Expressive version 1 and 2 with php ^5.6|^7.0 support.
 
-*ExpressiveRedirectHandler* is a package that contains [zend-expressive](https://github.com/zendframework/zend-expressive) middleware for handling redirect that fit with [zend-expressive-skeleton](https://github.com/zendframework/zend-expressive-skeleton) for following conditions:
+*ExpressiveRedirectHandler* is a package that contains [Mezzio](https://github.com/mezzio/mezzio) middleware for handling redirect that fit with [mezzio-skeleton](https://github.com/mezzio/mezzio-skeleton) for following conditions:
 
 1. When the given url to `RedirectResponse` is not registered in routing config
 -------------------------------------------------------------------------------
@@ -19,13 +21,13 @@ ExpressiveRedirectHandler
 For example, we use `RedirectResponse` instance in our Middleware:
 
 ```php
-use Zend\Diactoros\Response\RedirectResponse;
+use Laminas\Diactoros\Response\RedirectResponse;
 // ...
 $redirect = '/foo'; // may be a variable from GET
 return new RedirectResponse($redirect);
 ```
 
-if the passed `$redirect` as url is a valid and registered in the routes, it uses default `RedirectResponse` implementation, otherwise, it will redirect to default `default_url` registered in `config/autoload/expressive-redirect-handler.local.php`:
+if the passed `$redirect` as url is a valid and registered in the routes, it uses default `RedirectResponse` implementation, otherwise, it will redirect to default `default_url` registered in `config/autoload/mezzio-redirect-handler.local.php`:
 
 For example, we define:
 
@@ -34,7 +36,7 @@ For example, we define:
 
 return [
 
-    'expressive-redirect-handler' => [
+    'mezzio-redirect-handler' => [
         'allow_not_routed_url' => false,
         'default_url' => '/',
 
@@ -65,7 +67,7 @@ For specific urls that exceptional ( allowed to be redirected even not registere
 <?php
 return [
 
-    'expressive-redirect-handler' => [
+    'mezzio-redirect-handler' => [
         'allow_not_routed_url' => false,
         'default_url' => '/',
         'header_handler' => [
@@ -88,10 +90,10 @@ Installation
 
  - Require via composer
 ```bash
-composer require samsonasik/expressive-redirect-handler
+composer require samsonasik/mezzio-redirect-handler
 ```
 
- - Copy `vendor/samsonasik/expressive-redirect-handler/config/expressive-redirect-handler.local.php.dist` to `config/autoload/expressive-redirect-handler.local.php` and modify on our needs.
+ - Copy `vendor/samsonasik/mezzio-redirect-handler/config/mezzio-redirect-handler.local.php.dist` to `config/autoload/mezzio-redirect-handler.local.php` and modify on our needs.
 
  - Open `config/pipeline.php` and add:
 

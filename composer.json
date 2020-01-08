@@ -19,13 +19,13 @@
     "require": {
         "php": "^7.1",
         "jeremykendall/php-domain-parser": "^5.0",
-        "zendframework/zend-diactoros": "^1.7.1"
+        "laminas/laminas-diactoros": "^1.7.1"
     },
     "require-dev": {
+        "laminas/laminas-coding-standard": "^2.0.0",
+        "mezzio/mezzio": "^3.0",
         "php-coveralls/php-coveralls": "^2.1",
-        "phpunit/phpunit": "^7.0",
-        "zendframework/zend-coding-standard": "^1.0",
-        "zendframework/zend-expressive": "^3.0"
+        "phpunit/phpunit": "^7.0"
     },
     "config": {
         "process-timeout": 5000
@@ -45,6 +45,8 @@
             "ExpressiveRedirectHandlerTest\\": "test/"
         }
     },
+    "minimum-stability": "alpha",
+    "prefer-stable": true,
     "scripts": {
         "cs-check": "phpcs",
         "cs-fix": "phpcbf"
