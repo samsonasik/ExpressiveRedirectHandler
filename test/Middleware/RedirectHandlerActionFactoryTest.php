@@ -39,7 +39,7 @@ class RedirectHandlerActionFactoryTest extends TestCase
     {
         $factory = new RedirectHandlerActionFactory();
         $this->container->get('config')->willReturn([
-            'mezzio-redirect-handler' => [
+            'expressive-redirect-handler' => [
                 'allow_not_routed_url' => false,
                 'default_url' => '/',
             ],

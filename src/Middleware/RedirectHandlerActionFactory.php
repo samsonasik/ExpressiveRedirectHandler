@@ -29,7 +29,7 @@ class RedirectHandlerActionFactory
     public function __invoke(ContainerInterface $container): RedirectHandlerAction
     {
         $config                          = $container->get('config');
-        $expressiveRedirectHandlerConfig = $config['mezzio-redirect-handler'] ?? [];
+        $expressiveRedirectHandlerConfig = $config['expressive-redirect-handler'] ?? [];
         $router                          = $container->get(RouterInterface::class);
 
         return new RedirectHandlerAction(

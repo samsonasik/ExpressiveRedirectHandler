@@ -36,7 +36,7 @@ For example, we define:
 
 return [
 
-    'mezzio-redirect-handler' => [
+    'expressive-redirect-handler' => [
         'allow_not_routed_url' => false,
         'default_url' => '/',
 
@@ -67,7 +67,7 @@ For specific urls that exceptional ( allowed to be redirected even not registere
 <?php
 return [
 
-    'mezzio-redirect-handler' => [
+    'expressive-redirect-handler' => [
         'allow_not_routed_url' => false,
         'default_url' => '/',
         'header_handler' => [
