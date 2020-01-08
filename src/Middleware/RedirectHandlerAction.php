@@ -21,9 +21,7 @@ declare(strict_types=1);
 
 namespace ExpressiveRedirectHandler\Middleware;
 
-use function in_array;
 use InvalidArgumentException;
-use function is_string;
 use Laminas\Diactoros\Response;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Laminas\Diactoros\Uri;
@@ -32,6 +30,9 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+
+use function in_array;
+use function is_string;
 use function sprintf;
 
 class RedirectHandlerAction implements MiddlewareInterface
