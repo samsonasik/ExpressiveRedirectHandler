@@ -90,10 +90,10 @@ Installation
 
  - Require via composer
 ```bash
-composer require samsonasik/mezzio-redirect-handler
+composer require samsonasik/expressive-redirect-handler
 ```
 
- - Copy `vendor/samsonasik/mezzio-redirect-handler/config/mezzio-redirect-handler.local.php.dist` to `config/autoload/mezzio-redirect-handler.local.php` and modify on our needs.
+ - Copy `vendor/samsonasik/expressive-redirect-handler/config/mezzio-redirect-handler.local.php.dist` to `config/autoload/mezzio-redirect-handler.local.php` and modify on our needs.
 
  - Open `config/pipeline.php` and add:
 
