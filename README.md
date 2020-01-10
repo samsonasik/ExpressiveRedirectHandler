@@ -9,7 +9,7 @@ ExpressiveRedirectHandler
 
 > This is README for version ^2.0 which only support Mezzio version 3 with php ^7.1.
 
-> This is README for version ^1.0, , you can read at [version 1.* readme](https://github.com/samsonasik/ExpressiveRedirectHandler/tree/1.x.x) which support ZF Expressive version 3 with php ^7.1.
+> For version ^1.0, , you can read at [version 1.* readme](https://github.com/samsonasik/ExpressiveRedirectHandler/tree/1.x.x) which support ZF Expressive version 3 with php ^7.1.
 
 > For version 0.*, you can read at [version 0.* readme](https://github.com/samsonasik/ExpressiveRedirectHandler/tree/0.x.x) which still ZF Expressive version 1 and 2 with php ^5.6|^7.0 support.
 
